@@ -20,7 +20,7 @@ export default function SignIn() {
       // Store the token in a cookie
       document.cookie = `firebase-token=${idToken}; path=/`;
       
-      router.push('/dashboard');
+      router.push('/');
     } catch (error) {
       console.error('Authentication error:', error);
     } finally {
