@@ -1,19 +1,18 @@
-import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
+  const idToken = request.cookies.get('firebase-token');
   const isAuthPage = request.nextUrl.pathname.startsWith('/signin');
 
   if (isAuthPage) {
-    if (token) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+    if (idToken) {
+      return NextResponse.redirect(new URL('/', request.url));
     }
     return NextResponse.next();
   }
 
-  if (!token) {
+  if (!idToken) {
     return NextResponse.redirect(new URL('/signin', request.url));
   }
 
