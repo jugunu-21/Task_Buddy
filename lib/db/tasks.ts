@@ -4,11 +4,11 @@ import type { Task } from '@prisma/client';
 export async function getAllTasks(userId: string): Promise<Task[]> {
   return await prisma.task.findMany({
     where: { userId },
-    orderBy: { createdAt: 'desc' }
+    orderBy: { dueDate: 'desc' }
   });
 }
 
-export async function createTask(data: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Promise<Task> {
+export async function createTask(data: Omit<Task, 'id'>): Promise<Task> {
   return await prisma.task.create({
     data
   });

@@ -2,9 +2,15 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getAllTasks, createTask, updateTaskdb, deleteTask, toggleTaskCompletion } from '../../db/tasks';
 import type { Task as PrismaTask } from '@prisma/client';
 
-export interface Task extends Omit<PrismaTask, 'updatedAt'> {
-  status: 'todo' | 'in-progress' | 'completed';
-  priority: 'low' | 'medium' | 'high';
+export interface Task extends PrismaTask {
+  // Task fields from schema:
+  // - id: string
+  // - title: string
+  // - description: string
+  // - category: string
+  // - dueDate: DateTime
+  // - completed: boolean
+  // - userId: string
 }
 
 interface TaskState {
@@ -15,7 +21,6 @@ interface TaskState {
   filters: {
     status: string[];
     category: string[];
-    priority: string[];
   };
 }
 
@@ -35,8 +40,7 @@ const initialState: TaskState = {
   filteredTasks: loadTasks(),
   filters: {
     status: [],
-    category: [],
-    priority: []
+    category: []
   }
 };
 
@@ -57,7 +61,7 @@ export const fetchTasks = createAsyncThunk(
 
 export const addTaskAsync = createAsyncThunk(
   'tasks/addTask',
-  async (taskData: Omit<PrismaTask, 'id' | 'createdAt' | 'updatedAt'>, { rejectWithValue }) => {
+  async (taskData: Omit<PrismaTask, 'id'>, { rejectWithValue }) => {
     try {
       const task = await createTask(taskData);
       return task;
@@ -107,12 +111,15 @@ const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    addTask: (state: TaskState, action: PayloadAction<Omit<Task, 'id' | 'createdAt' | 'completed'>>) => {
+    addTask: (state: TaskState, action: PayloadAction<Omit<Task, 'id' | 'completed'|'userId'>>) => {
       const newTask: Task = {
         ...action.payload,
         id: Date.now().toString(),
-        createdAt: new Date(),
-        completed: false
+        completed: false,
+        userId:"USERID",
+        
+      
+
       };
       state.tasks.push(newTask);
       state.filteredTasks = state.tasks;
@@ -135,31 +142,28 @@ const taskSlice = createSlice({
       const task = state.tasks.find(task => task.id === action.payload);
       if (task) {
         task.completed = !task.completed;
-        task.status = task.completed ? 'completed' : 'todo';
+
         saveTasks(state.tasks);
       }
     },
     setFilters: (state, action: PayloadAction<{
       status?: string[];
       category?: string[];
-      priority?: string[];
     }>) => {
       state.filters = { ...state.filters, ...action.payload };
       state.filteredTasks = state.tasks.filter(task => {
         const statusMatch = state.filters.status.length === 0 || 
-          state.filters.status.includes(task.status);
+          state.filters.status.includes(task.completed ? 'completed' : 'todo');
         const categoryMatch = state.filters.category.length === 0 || 
           state.filters.category.includes(task.category);
-        const priorityMatch = state.filters.priority.length === 0 || 
-          state.filters.priority.includes(task.priority);
+        const priorityMatch = true; // Removed priority filter since it's no longer in schema
         return statusMatch && categoryMatch && priorityMatch;
       });
     },
     clearFilters: (state) => {
       state.filters = {
         status: [],
-        category: [],
-        priority: []
+        category: []
       };
       state.filteredTasks = state.tasks;
     }
