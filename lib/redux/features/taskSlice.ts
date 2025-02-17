@@ -166,9 +166,19 @@ const taskSlice = createSlice({
         category: []
       };
       state.filteredTasks = state.tasks;
-    }
+    },
+    filterTask: (state, action: PayloadAction<string[]>) => {
+      const selectedFilters = action.payload;
+      if (selectedFilters.length === 0 || selectedFilters.includes('all')) {
+        state.filteredTasks = state.tasks;
+        return;
+      }
+      state.filteredTasks = state.tasks.filter((task) => {
+        const taskStatus = task.completed ? 'completed' : 'todo';
+        return selectedFilters.includes(taskStatus);
+      });
   },
- 
+}
 });
 
 export const {
@@ -177,6 +187,7 @@ export const {
   removeTask,
   toggleTaskComplete,
   setFilters,
-  clearFilters
+  clearFilters,
+  filterTask
 } = taskSlice.actions;
 export default taskSlice.reducer;
