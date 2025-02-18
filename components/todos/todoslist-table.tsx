@@ -40,7 +40,8 @@ import { addTask,
     toggleTaskComplete,
     setFilters,
     clearFilters,
-    UpdateIntialTasks} from "@/lib/redux/features/taskSlice";
+    UpdateIntialTasks,
+    ITask} from "@/lib/redux/features/taskSlice";
 import { Input } from "../../components/ui/input"
 
 import {
@@ -77,7 +78,7 @@ const filters: FilterType[] = [
 
 ];
 
-export function TodosListTable() {
+export function TodosListTable({data}:{data:ITask[]}) {
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
     useEffect(() => {
@@ -97,7 +98,7 @@ export function TodosListTable() {
         return () => clearTimeout(timerId);
     }, []);
     // const [data, setData] = useState<ITodos[]>([])
-    const data = useSelector((state: RootState) => state.tasks.tasks)
+
 
     console.log("dataaa", data)
     const [checkedFilters, setCheckedFilters] = useState<string[]>(["all"]);
