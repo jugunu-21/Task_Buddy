@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getAllTasks, createTask, updateTaskdb, deleteTask, toggleTaskCompletion } from '../../db/tasks';
+import { getAllTasks, createTask, updateTaskdb, deleteTask,} from '../../db/tasks';
 import type { Task as PrismaTask } from '@prisma/client';
 export interface ITask extends PrismaTask {
   // Task fields from schema:
@@ -67,27 +67,27 @@ export const deleteTaskAsync = async (id: string) => {
   }
 };
 
-export const toggleTaskCompleteAsync = async (id: string, completed: boolean) => {
-  try {
-    const task = await toggleTaskCompletion(id, completed);
-    return task;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to toggle task completion');
-  }
-};
+// export const toggleTaskCompleteAsync = async (id: string, completed: boolean) => {
+//   try {
+//     const task = await toggleTaskCompletion(id, completed);
+//     return task;
+//   } catch (error) {
+//     throw new Error(error instanceof Error ? error.message : 'Failed to toggle task completion');
+//   }
+// };
 const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
     UpdateIntialTasks: (state, action: PayloadAction<ITask[]>) => {
       state.loading = true;
-      state.tasks = action.payload;
+      state.tasks = action.payload || [];
+      state.filteredTasks = action.payload || [];
       state.loading = false;
     },
     addTask: (state: ITaskState, action: PayloadAction<Omit<ITask, 'id' | 'completed'|'userId'>>) => {
       const taskData = {
         ...action.payload,
-        completed: false,
         userId:"USERID",
       };
       addTaskAsync(taskData).then(newTask => {
@@ -109,27 +109,27 @@ const taskSlice = createSlice({
       state.filteredTasks = state.tasks;
 
     },
-    toggleTaskComplete: (state, action: PayloadAction<string>) => {
-      const task = state.tasks.find(task => task.id === action.payload);
-      if (task) {
-        task.completed = !task.completed;
+    // toggleTaskComplete: (state, action: PayloadAction<string>) => {
+    //   const task = state.tasks.find(task => task.id === action.payload);
+    //   if (task) {
+    //     task.completed = !task.completed;
 
-      }
-    },
-    setFilters: (state, action: PayloadAction<{
-      status?: string[];
-      category?: string[];
-    }>) => {
-      state.filters = { ...state.filters, ...action.payload };
-      state.filteredTasks = state.tasks.filter(task => {
-        const statusMatch = state.filters.status.length === 0 || 
-          state.filters.status.includes(task.completed ? 'completed' : 'todo');
-        const categoryMatch = state.filters.category.length === 0 || 
-          state.filters.category.includes(task.category);
-        const priorityMatch = true; // Removed priority filter since it's no longer in schema
-        return statusMatch && categoryMatch && priorityMatch;
-      });
-    },
+    //   }
+    // },
+    // setFilters: (state, action: PayloadAction<{
+    //   status?: string[];
+    //   category?: string[];
+    // }>) => {
+    //   state.filters = { ...state.filters, ...action.payload };
+    //   state.filteredTasks = state.tasks.filter(task => {
+    //     const statusMatch = state.filters.status.length === 0 || 
+    //       state.filters.status.includes(task.completed ? 'completed' : 'todo');
+    //     const categoryMatch = state.filters.category.length === 0 || 
+    //       state.filters.category.includes(task.category);
+    //     const priorityMatch = true; // Removed priority filter since it's no longer in schema
+    //     return statusMatch && categoryMatch && priorityMatch;
+    //   });
+    // },
     clearFilters: (state) => {
       state.filters = {
         status: [],
@@ -137,17 +137,17 @@ const taskSlice = createSlice({
       };
       state.filteredTasks = state.tasks;
     },
-    filterTask: (state, action: PayloadAction<string[]>) => {
-      const selectedFilters = action.payload;
-      if (selectedFilters.length === 0 || selectedFilters.includes('all')) {
-        state.filteredTasks = state.tasks;
-        return;
-      }
-      state.filteredTasks = state.tasks.filter((task) => {
-        const taskStatus = task.completed ? 'completed' : 'todo';
-        return selectedFilters.includes(taskStatus);
-      });
-  },
+  //   filterTask: (state, action: PayloadAction<string[]>) => {
+  //     const selectedFilters = action.payload;
+  //     if (selectedFilters.length === 0 || selectedFilters.includes('all')) {
+  //       state.filteredTasks = state.tasks;
+  //       return;
+  //     }
+  //     state.filteredTasks = state.tasks.filter((task) => {
+  //       const taskStatus = task.completed ? 'completed' : 'todo';
+  //       return selectedFilters.includes(taskStatus);
+  //     });
+  // },
 }
 });
 export const {
@@ -155,9 +155,9 @@ export const {
   addTask,
   updateTask,
   removeTask,
-  toggleTaskComplete,
-  setFilters,
+  // toggleTaskComplete,
+  // setFilters,
   clearFilters,
-  filterTask
+  // filterTask
 } = taskSlice.actions;
 export default taskSlice.reducer;

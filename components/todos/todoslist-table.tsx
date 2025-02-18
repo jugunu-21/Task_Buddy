@@ -37,8 +37,8 @@ import type { Task } from '@prisma/client'
 import { addTask,
     updateTask,
     removeTask,
-    toggleTaskComplete,
-    setFilters,
+    // toggleTaskComplete,
+
     clearFilters,
     UpdateIntialTasks,
     ITask} from "@/lib/redux/features/taskSlice";
@@ -115,20 +115,20 @@ export function TodosListTable({data}:{data:ITask[]}) {
             id: "select",
             cell: ({ row }) => (
                 <Checkbox
-                    checked={row.original.completed}
-                    onCheckedChange={(value) => {
-                        if (value) {
-                            updatetodosReducer(updateTask({
-                                id: row.original.id,
-                                completed: true
-                            }));
-                        } else {
-                            updatetodosReducer(updateTask({
-                                id: row.original.id,
-                                completed: false
-                            }));
-                        }
-                    }}
+                    checked={false}
+                    // onCheckedChange={(value) => {
+                    //     if (value) {
+                    //         updatetodosReducer(updateTask({
+                    //             id: row.original.id,
+                    //             completed: true
+                    //         }));
+                    //     } else {
+                    //         updatetodosReducer(updateTask({
+                    //             id: row.original.id,
+                    //             completed: false
+                    //         }));
+                    //     }
+                    // }}
                     aria-label="Select row"
                 />
             ),
@@ -275,63 +275,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                             }
                             className="max-w-sm"
                         />
-                        <div className="flex gap-2">
-                            <DropdownMenu >
-                                <DropdownMenuTrigger asChild className=" ">
-                                    <Button variant="outline" className="justify-end ">
-                                        Filters
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    {filters.map((filter, index) => {
-                                        return (
-                                            <DropdownMenuCheckboxItem
-                                                key={filter.value}
-
-                                                checked={checkedFilters.includes(filter.value)}
-                                                onCheckedChange={(value) => {
-
-                                                    toggleFilter(filter.value);
-
-                                                }
-                                                }
-                                                onClick={() => {
-updatetodosReducer(setFilters({ status: toggleFilter(filter.value) }))
-                                                }}
-                                            >
-                                                {filter.label}
-                                            </DropdownMenuCheckboxItem>
-                                        )
-                                    })}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" className="ml-auto">
-                                        Columns <ChevronDown />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    {table
-                                        .getAllColumns()
-                                        .filter((column) => column.getCanHide())
-                                        .map((column) => {
-                                            return (
-                                                <DropdownMenuCheckboxItem
-                                                    key={column.id}
-                                                    className="capitalize"
-                                                    checked={column.getIsVisible()}
-                                                    onCheckedChange={(value) =>
-                                                        column.toggleVisibility(!!value)
-                                                    }
-                                                >
-                                                    {column.id}
-                                                </DropdownMenuCheckboxItem>
-                                            )
-                                        })}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
+                        
                     </div>
                     <div className="rounded-md border">
                         <Table>

@@ -4,7 +4,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {P
+datasource db {
   provider = "postgresql"
   url      = env("NEXT_PUBLIC_DATABASE_URL")
 }
@@ -15,6 +15,6 @@ model Task {
   description String
   category    String      
   dueDate     DateTime
-  completed   Boolean           
+  status      String      @default("todo")  // Can be "todo", "in-progress", "completed"
   userId      String      // To associate tasks with users
 }

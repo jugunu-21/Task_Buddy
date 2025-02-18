@@ -28,9 +28,9 @@ export async function deleteTask(id: string): Promise<Task> {
   });
 }
 
-export async function toggleTaskCompletion(id: string, completed: boolean): Promise<Task> {
-  return await prisma.task.update({
-    where: { id },
-    data: { completed }
-  });
-}
+// export async function toggleTaskCompletion(id: string, completed: boolean): Promise<Task> {
+//   return await prisma.task.update({
+//     where: { id },
+//     data: { completed }
+//   });
+// }
