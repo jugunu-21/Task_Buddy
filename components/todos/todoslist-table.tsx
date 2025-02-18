@@ -67,6 +67,7 @@ import { Badge } from "../ui/badge"
 import { createDateFromISO } from "../../helpers/date-formator"
 import { getBadgeVariant } from "../../helpers/get-badges-varient"
 import { getAllTasks } from '@/lib/db/tasks';
+import { CardWithForm } from './add-todos-form';
 interface FilterType {
     value: string;
     label: string;
@@ -85,6 +86,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
         inProgress: false,
         completed: false
     });
+    const [addOpen, setAddOpen] = useState<boolean>(false);
 
     const toggleSection = (section: 'todo' | 'inProgress' | 'completed') => {
         setExpandedSections(prev => ({
@@ -309,6 +311,13 @@ export function TodosListTable({data}:{data:ITask[]}) {
                             className="max-w-sm"
                         />
                         
+                        <Button
+                            onClick={() => setAddOpen(true)}
+                            className="ml-4"
+                            variant="default"
+                        >
+                            Add Task
+                        </Button>
                     </div>
                     <div className="rounded-md border">
                         <Table>
@@ -491,6 +500,21 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                     sheetOpen={updateOpen}
                                     setSheetOpen={setUpdateOpen}
                                 />}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+            <AlertDialog open={addOpen} onOpenChange={setAddOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Add New Task</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            <CardWithForm
+                                sheetOpen={addOpen}
+                                setSheetOpen={setAddOpen}
+                            />
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

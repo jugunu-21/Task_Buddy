@@ -13,7 +13,7 @@ export default function Home() {
       
       <Header />
       <FiltersAndSearch />
-      <CardWithForm />
+      {/* <CardWithForm /> */}
      <Table />
     </div></Provider>
   );
