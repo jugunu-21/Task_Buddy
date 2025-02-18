@@ -12,7 +12,7 @@ export default function Home() {
     <div className="min-h-screen ">
       
       <Header />
-      <FiltersAndSearch />
+    
       {/* <CardWithForm /> */}
      <Table />
     </div></Provider>

@@ -68,6 +68,7 @@ import { createDateFromISO } from "../../helpers/date-formator"
 import { getBadgeVariant } from "../../helpers/get-badges-varient"
 import { getAllTasks } from '@/lib/db/tasks';
 import { CardWithForm } from './add-todos-form';
+import FiltersAndSearch from '../FiltersAndSearch';
 interface FilterType {
     value: string;
     label: string;
@@ -301,7 +302,13 @@ export function TodosListTable({data}:{data:ITask[]}) {
         <Card className="h-full">
             <CardContent>
                 <div className="w-full h-full">
-                    <div className="flex items-center py-4 justify-between ">
+                    <FiltersAndSearch VALUESEARCH={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+                            ONCHANGESEARCH={(event) =>
+                                table.getColumn("title")?.setFilterValue(event.target.value)
+                            } 
+                            ONCLICKBUTTON={() => setAddOpen(true)}
+                            />
+                    {/* <div className="flex items-center py-4 justify-between ">
                         <Input
                             placeholder="Search for title..."
                             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -318,7 +325,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                         >
                             Add Task
                         </Button>
-                    </div>
+                    </div> */}
                     <div className="rounded-md border">
                         <Table>
                             <TableHeader>

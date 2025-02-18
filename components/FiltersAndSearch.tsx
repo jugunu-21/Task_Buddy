@@ -3,19 +3,15 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-export default function FiltersAndSearch() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('all');
+interface FiltersAndSearchProps {
+  VALUESEARCH: string;
+  ONCHANGESEARCH: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  ONCLICKBUTTON: () => void;
+}
+
+export default function FiltersAndSearch({ VALUESEARCH, ONCHANGESEARCH, ONCLICKBUTTON }: FiltersAndSearchProps) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedDueDate, setSelectedDueDate] = useState('all');
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleFilterChange = (filter: string) => {
-    setSelectedFilter(filter);
-  };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
@@ -30,6 +26,7 @@ export default function FiltersAndSearch() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <button
+            onClick={ONCLICKBUTTON}
             className=" ml-auto order-1 sm:order-3 px-4 py-2 bg-purple-600 text-white rounded-3xl hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors duration-200 flex items-center gap-2"
           >
             <svg
@@ -80,8 +77,8 @@ export default function FiltersAndSearch() {
           </div>
           <input
             type="text"
-            value={searchQuery}
-            onChange={handleSearchChange}
+            value={VALUESEARCH}
+            onChange={ONCHANGESEARCH}
             placeholder="Search tasks..."
             className="order-3 w-full sm:w-48 sm:order-2 block w-44 rounded-3xl pl-10 pr-3 py-2 border border-gray-300 leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
           />
