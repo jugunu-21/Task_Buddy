@@ -123,10 +123,35 @@ export function TodosListTable({data}:{data:ITask[]}) {
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
     const columns: ColumnDef<Task>[] = [
+        // {
+        //     id: "select",
+        //     cell: ({ row }) => (
+        //         <Checkbox
+        //             checked={false}
+        //             // onCheckedChange={(value) => {
+        //             //     if (value) {
+        //             //         updatetodosReducer(updateTask({
+        //             //             id: row.original.id,
+        //             //             completed: true
+        //             //         }));
+        //             //     } else {
+        //             //         updatetodosReducer(updateTask({
+        //             //             id: row.original.id,
+        //             //             completed: false
+        //             //         }));
+        //             //     }
+        //             // }}
+        //             aria-label="Select row"
+        //         />
+        //     ),
+        //     enableSorting: false,
+        //     enableHiding: false,
+        // },
         {
-            id: "select",
-            cell: ({ row }) => (
-                <Checkbox
+            accessorKey: "title",
+            header: "title",
+            cell: ({ row }) => (< div className='flex gap-2'>
+             <Checkbox
                     checked={false}
                     // onCheckedChange={(value) => {
                     //     if (value) {
@@ -143,9 +168,10 @@ export function TodosListTable({data}:{data:ITask[]}) {
                     // }}
                     aria-label="Select row"
                 />
+                   <div className="capitalize">{row.getValue("title")}</div>
+                </div>
+             
             ),
-            enableSorting: false,
-            enableHiding: false,
         },
 
         {
@@ -161,17 +187,11 @@ export function TodosListTable({data}:{data:ITask[]}) {
                     </Button>
                 )
             },
-            cell: ({ row }) => <Badge className={`lowercase ${getBadgeVariant(row.getValue("status"))}`}>
+            cell: ({ row }) => <Badge variant="secondary" className='p-2'>
                 {row.getValue("status")}
             </Badge>
         },
-        {
-            accessorKey: "title",
-            header: "title",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("title")}</div>
-            ),
-        },
+       
 
         {
             accessorKey: "dueDate",
@@ -205,9 +225,10 @@ export function TodosListTable({data}:{data:ITask[]}) {
                 )
             },
             cell: ({ row }) =>
-                <Badge className={`lowercase ${getBadgeVariant(row.getValue("category"))}`}>
-                    {row.getValue("category")}
-                </Badge>
+                // <Badge className={`lowercase ${getBadgeVariant(row.getValue("category"))}`}>
+                //     {row.getValue("category")}
+                // </Badge>
+                <div >{row.getValue("category")}</div>
         },
         {
             id: "actions",
@@ -324,7 +345,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                                 </Badge>
                                             </div>
                                             <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('todo'); }}>
-                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.todo ? '' : '-rotate-90'}`} />
+                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.todo ? '' : '-rotate-180'}`} />
                                             </Button>
                                         </div>
                                     </TableCell>
@@ -358,7 +379,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                                 </Badge>
                                             </div>
                                             <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('inProgress'); }}>
-                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.inProgress ? '' : '-rotate-90'}`} />
+                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.inProgress ? '' : '-rotate-180'}`} />
                                             </Button>
                                         </div>
                                     </TableCell>
@@ -392,7 +413,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                                 </Badge>
                                             </div>
                                             <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('completed'); }}>
-                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.completed ? '' : '-rotate-90'}`} />
+                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.completed ? '' : '-rotate-180'}`} />
                                             </Button>
                                         </div>
                                     </TableCell>

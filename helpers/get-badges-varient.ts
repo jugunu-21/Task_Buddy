@@ -1,7 +1,7 @@
 
-export const getBadgeVariant = (value: 'work' | 'personal' ): string => {
+export const getBadgeVariant = (value: 'work' | 'personal' |'to-do'): string => {
     switch (value) {
-        case 'work':
+        case 'to-do':
             return 'bg-purple-500 hover:bg-purple-500';
         case 'personal':
             return 'bg-pink-500 hover:bg-pink-500';

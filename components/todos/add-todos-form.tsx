@@ -62,7 +62,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
             title,
             description,
             category,
-            status: "todo",
+            status: "TO-DO",
            
             // TODO: Replace with actual user ID from auth context
         };
