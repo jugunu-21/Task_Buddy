@@ -299,20 +299,20 @@ export function TodosListTable({data}:{data:ITask[]}) {
             rowSelection,
         },
     })
-    const toggleFilter = (filterValue: string) => {
-        const newFilters = [...checkedFilters]; // Create a copy of the current filters
+    // const toggleFilter = (filterValue: string) => {
+    //     const newFilters = [...checkedFilters]; // Create a copy of the current filters
 
-        if (newFilters.includes(filterValue)) {
-            // Remove the filter if it already exists
-            newFilters.splice(newFilters.indexOf(filterValue), 1);
-        } else {
-            // Add the filter if it doesn't exist
-            newFilters.push(filterValue);
-        }
-        setCheckedFilters(newFilters);
-        console.log("Updated filters:", newFilters);
-        return newFilters
-    };
+    //     if (newFilters.includes(filterValue)) {
+    //         // Remove the filter if it already exists
+    //         newFilters.splice(newFilters.indexOf(filterValue), 1);
+    //     } else {
+    //         // Add the filter if it doesn't exist
+    //         newFilters.push(filterValue);
+    //     }
+    //     setCheckedFilters(newFilters);
+    //     console.log("Updated filters:", newFilters);
+    //     return newFilters
+    // };
     return (
         <Card className="h-full">
             <CardContent>
