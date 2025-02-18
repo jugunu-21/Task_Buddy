@@ -80,6 +80,18 @@ const filters: FilterType[] = [
 
 export function TodosListTable({data}:{data:ITask[]}) {
     const [loading, setLoading] = useState(true);
+    const [expandedSections, setExpandedSections] = useState({
+        todo: true,
+        inProgress: false,
+        completed: false
+    });
+
+    const toggleSection = (section: 'todo' | 'inProgress' | 'completed') => {
+        setExpandedSections(prev => ({
+            ...prev,
+            [section]: !prev[section]
+        }));
+    };
     const dispatch = useDispatch();
     useEffect(() => {
         getAllTasks("USERID").then((tasks) => {
@@ -298,8 +310,28 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                 ))}
                             </TableHeader>
                             <TableBody>
-                                {table.getRowModel().rows?.length ? (
-                                    table.getRowModel().rows.map((row) => (
+                                {/* TO-DO Section */}
+                                <TableRow 
+                                    className="bg-blue-50 cursor-pointer hover:bg-blue-100"
+                                    onClick={() => toggleSection('todo')}
+                                >
+                                    <TableCell colSpan={columns.length} className="py-2">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-semibold">To Do</h3>
+                                                <Badge variant="secondary">
+                                                    {table.getRowModel().rows.filter(row => row.original.status === "TO-DO").length}
+                                                </Badge>
+                                            </div>
+                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('todo'); }}>
+                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.todo ? '' : '-rotate-90'}`} />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                {expandedSections.todo && table.getRowModel().rows
+                                    .filter(row => row.original.status === "TO-DO")
+                                    .map((row) => (
                                         <TableRow
                                             key={row.id}
                                             data-state={row.getIsSelected() && "selected"}
@@ -313,20 +345,90 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                                 </TableCell>
                                             ))}
                                         </TableRow>
-                                    ))
-                                ) : (
+                                    ))}
+                                
+                                {/* IN-PROGRESS Section */}
+                                <TableRow className="bg-yellow-50 cursor-pointer hover:bg-yellow-100">
+                                    <TableCell colSpan={columns.length} className="py-2">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-semibold">In Progress</h3>
+                                                <Badge variant="secondary">
+                                                    {table.getRowModel().rows.filter(row => row.original.status === "IN-PROGRESS").length}
+                                                </Badge>
+                                            </div>
+                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('inProgress'); }}>
+                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.inProgress ? '' : '-rotate-90'}`} />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                {expandedSections.inProgress && table.getRowModel().rows
+                                    .filter(row => row.original.status === "IN-PROGRESS")
+                                    .map((row) => (
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={row.getIsSelected() && "selected"}
+                                        >
+                                            {row.getVisibleCells().map((cell) => (
+                                                <TableCell key={cell.id}>
+                                                    {flexRender(
+                                                        cell.column.columnDef.cell,
+                                                        cell.getContext()
+                                                    )}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))}
+                                
+                                {/* COMPLETED Section */}
+                                <TableRow className="bg-green-50 cursor-pointer hover:bg-green-100">
+                                    <TableCell colSpan={columns.length} className="py-2">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-semibold">Completed</h3>
+                                                <Badge variant="secondary">
+                                                    {table.getRowModel().rows.filter(row => row.original.status === "COMPLETED").length}
+                                                </Badge>
+                                            </div>
+                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('completed'); }}>
+                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.completed ? '' : '-rotate-90'}`} />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                {expandedSections.completed && table.getRowModel().rows
+                                    .filter(row => row.original.status === "COMPLETED")
+                                    .map((row) => (
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={row.getIsSelected() && "selected"}
+                                        >
+                                            {row.getVisibleCells().map((cell) => (
+                                                <TableCell key={cell.id}>
+                                                    {flexRender(
+                                                        cell.column.columnDef.cell,
+                                                        cell.getContext()
+                                                    )}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))}
+                                
+                                {/* Loading and Empty States */}
+                                {!table.getRowModel().rows?.length && (
                                     <TableRow>
                                         <TableCell
                                             colSpan={columns.length}
                                             className="h-24 text-center"
                                         >
-                                            {loading ?
+                                            {loading ? (
                                                 <div className="flex justify-center items-center">
                                                     <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
                                                 </div>
-                                                :
+                                            ) : (
                                                 <div className="text-gray-500">No tasks found</div>
-                                            }
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 )}
