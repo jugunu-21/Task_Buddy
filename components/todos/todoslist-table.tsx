@@ -41,7 +41,8 @@ import { addTask,
 
     clearFilters,
     UpdateIntialTasks,
-    ITask} from "@/lib/redux/features/taskSlice";
+    ITask,
+    removeBulkTasks} from "@/lib/redux/features/taskSlice";
 import { Input } from "../../components/ui/input"
 
 import {
@@ -81,6 +82,36 @@ const filters: FilterType[] = [
 ];
 
 export function TodosListTable({data}:{data:ITask[]}) {
+    const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+
+    const handleTaskSelect = (taskId: string) => {
+        setSelectedTasks(prev => {
+            if (prev.includes(taskId)) {
+                return prev.filter(id => id !== taskId);
+            } else {
+                return [...prev, taskId];
+            }
+        });
+    };
+
+    const handleBulkDelete = () => {
+        if (selectedTasks.length > 0) {
+            updatetodosReducer(removeBulkTasks(selectedTasks));
+            setSelectedTasks([]);
+        }
+    };
+
+    const handleBulkStatusUpdate = (newStatus: string) => {
+        if (selectedTasks.length > 0) {
+            selectedTasks.forEach(taskId => {
+                updatetodosReducer(updateTask({
+                    id: taskId,
+                    status: newStatus
+                }));
+            });
+            setSelectedTasks([]);
+        }
+    };
     const [loading, setLoading] = useState(true);
     const [expandedSections, setExpandedSections] = useState({
         todo: true,
@@ -155,20 +186,8 @@ export function TodosListTable({data}:{data:ITask[]}) {
             header: "title",
             cell: ({ row }) => (< div className='flex gap-2'>
              <Checkbox
-                    checked={false}
-                    // onCheckedChange={(value) => {
-                    //     if (value) {
-                    //         updatetodosReducer(updateTask({
-                    //             id: row.original.id,
-                    //             completed: true
-                    //         }));
-                    //     } else {
-                    //         updatetodosReducer(updateTask({
-                    //             id: row.original.id,
-                    //             completed: false
-                    //         }));
-                    //     }
-                    // }}
+                    checked={selectedTasks.includes(row.original.id)}
+                    onCheckedChange={() => handleTaskSelect(row.original.id)}
                     aria-label="Select row"
                 />
                    <div className="capitalize">{row.getValue("title")}</div>
@@ -495,6 +514,69 @@ export function TodosListTable({data}:{data:ITask[]}) {
                     </div>
 
                 </div>
+                {selectedTasks.length > 0 && (
+                    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black p-4 rounded-lg shadow-lg border flex items-center gap-4 z-50">
+                        <span className="text-sm font-medium text-white">{selectedTasks.length} task(s) selected</span>
+                        <div className="flex items-center gap-2">
+                            <div className="relative">
+                                <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        const menu = e.currentTarget.nextElementSibling;
+                                        if (menu) {
+                                            menu.classList.toggle('hidden');
+                                        }
+                                    }}
+                                >
+                                    Change Status
+                                </Button>
+                                <div className="hidden absolute left-0 bottom-full mb-1 w-40 bg-black border rounded-md shadow-lg z-50">
+                                    <div className="py-1">
+                                        <button
+                                            className="w-full px-4 py-2 text-left text-sm text-white hover:bg-slate-800"
+                                            onClick={() => {
+                                                handleBulkStatusUpdate("TO-DO");
+                                                const menu = document.querySelector('.status-menu');
+                                                if (menu) menu.classList.add('hidden');
+                                            }}
+                                        >
+                                            Mark as Todo
+                                        </button>
+                                        <button
+                                            className="w-full px-4 py-2 text-left text-sm text-white hover:bg-slate-800"
+                                            onClick={() => {
+                                                handleBulkStatusUpdate("IN-PROGRESS");
+                                                const menu = document.querySelector('.status-menu');
+                                                if (menu) menu.classList.add('hidden');
+                                            }}
+                                        >
+                                            Mark as In Progress
+                                        </button>
+                                        <button
+                                            className="w-full px-4 py-2 text-left text-sm text-white hover:bg-slate-800"
+                                            onClick={() => {
+                                                handleBulkStatusUpdate("COMPLETED");
+                                                const menu = document.querySelector('.status-menu');
+                                                if (menu) menu.classList.add('hidden');
+                                            }}
+                                        >
+                                            Mark as Completed
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={handleBulkDelete}
+                            >
+                                Delete Selected
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </CardContent>
             <AlertDialog open={updateOpen} onOpenChange={setUpdateOpen}>
                 <AlertDialogContent >

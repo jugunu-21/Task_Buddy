@@ -58,6 +58,16 @@ export const updateTaskAsync = async (id: string, data: Partial<PrismaTask>) => 
   }
 };
 
+export const updateBulkTasksAsync = async (ids: string[], data: Partial<PrismaTask>) => {
+  try {
+    const updatePromises = ids.map(id => updateTaskdb(id, data));
+    const tasks = await Promise.all(updatePromises);
+    return tasks;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to update tasks');
+  }
+};
+
 export const deleteTaskAsync = async (id: string) => {
   try {
     await deleteTask(id);
@@ -113,6 +123,31 @@ const taskSlice = createSlice({
         state.error = error.message;
       });
     },
+    removeBulkTasks: (state, action: PayloadAction<string[]>) => {
+      Promise.all(action.payload.map(id => deleteTaskAsync(id)))
+        .then(() => {
+          state.tasks = state.tasks.filter(task => !action.payload.includes(task.id));
+          state.filteredTasks = state.tasks;
+        })
+        .catch(error => {
+          state.error = error.message;
+        });
+    },
+    updateBulkTasks: (state, action: PayloadAction<{ ids: string[], data: Partial<ITask> }>) => {
+      updateBulkTasksAsync(action.payload.ids, action.payload.data)
+        .then((updatedTasks) => {
+          updatedTasks.forEach(updatedTask => {
+            const index = state.tasks.findIndex(task => task.id === updatedTask.id);
+            if (index !== -1) {
+              state.tasks[index] = { ...state.tasks[index], ...updatedTask };
+            }
+          });
+          state.filteredTasks = state.tasks;
+        })
+        .catch(error => {
+          state.error = error.message;
+        });
+    },
     // toggleTaskComplete: (state, action: PayloadAction<string>) => {
     //   const task = state.tasks.find(task => task.id === action.payload);
     //   if (task) {
@@ -159,9 +194,8 @@ export const {
   addTask,
   updateTask,
   removeTask,
-  // toggleTaskComplete,
-  // setFilters,
+  removeBulkTasks,
+  updateBulkTasks,
   clearFilters,
-  // filterTask
 } = taskSlice.actions;
 export default taskSlice.reducer;
