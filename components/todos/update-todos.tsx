@@ -22,9 +22,6 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: Task, sh
     const [dueDate, setDueDate] = React.useState<Date>(new Date(todos.dueDate));
     const [title, setTitle] = React.useState<string>(todos.title);
     const [description, setDescription] = React.useState<string>(todos.description);
-
-
-
     const handleSubmituUpdate = () => {
         if (!title) {
             toast.error("Title is required");
@@ -40,20 +37,16 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: Task, sh
             return;
         }
      
-
         dispatch(updateTask({
             dueDate: dueDate,
             title,
             description,
-
-
             id: todos.id,
-            completed: todos.completed
+            status: todos.status
         }));
         setSheetOpen(false)
         setTitle('');
         setDescription('');
-
         setDueDate(new Date());
     };
 

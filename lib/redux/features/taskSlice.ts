@@ -99,15 +99,19 @@ const taskSlice = createSlice({
     updateTask: (state, action: PayloadAction<Partial<ITask> & { id: string }>) => {
       const index = state.tasks.findIndex(task => task.id === action.payload.id);
       if (index !== -1) {
-        state.tasks[index] = { ...state.tasks[index], ...action.payload };
-        state.filteredTasks = state.tasks;
-
+        updateTaskAsync(action.payload.id, action.payload).then(() => {
+          state.tasks[index] = { ...state.tasks[index], ...action.payload };
+          state.filteredTasks = state.tasks;
+        });
       }
     },
     removeTask: (state, action: PayloadAction<string>) => {
-      state.tasks = state.tasks.filter(task => task.id !== action.payload);
-      state.filteredTasks = state.tasks;
-
+      deleteTaskAsync(action.payload).then(() => {
+        state.tasks = state.tasks.filter(task => task.id !== action.payload);
+        state.filteredTasks = state.tasks;
+      }).catch(error => {
+        state.error = error.message;
+      });
     },
     // toggleTaskComplete: (state, action: PayloadAction<string>) => {
     //   const task = state.tasks.find(task => task.id === action.payload);
