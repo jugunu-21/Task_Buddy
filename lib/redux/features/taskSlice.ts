@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getAllTasks, createTask, updateTaskdb, deleteTask,} from '../../db/tasks';
+import { getAllTasks, createTask, updateTaskdb, deleteTask, updateStatusdb,} from '../../db/tasks';
 import type { Task as PrismaTask } from '@prisma/client';
-export interface ITask extends PrismaTask {
+export interface ITask extends Omit<PrismaTask, 'dueDate'> {
   // Task fields from schema:
   // - id: string
   // - title: string
   // - description: string
   // - category: string
-  // - dueDate: DateTime
   // - completed: boolean
   // - userId: string
+  dueDate: string;
 }
 interface ITaskState {
   loading: boolean;
@@ -58,9 +58,9 @@ export const updateTaskAsync = async (id: string, data: Partial<PrismaTask>) => 
   }
 };
 
-export const updateBulkTasksAsync = async (ids: string[], data: Partial<PrismaTask>) => {
+export const updateBulkTasksAsync = async (ids: string[], status: string) => {
   try {
-    const updatePromises = ids.map(id => updateTaskdb(id, data));
+    const updatePromises = ids.map(id => updateStatusdb(id, status));
     const tasks = await Promise.all(updatePromises);
     return tasks;
   } catch (error) {
@@ -91,26 +91,41 @@ const taskSlice = createSlice({
   reducers: {
     UpdateIntialTasks: (state, action: PayloadAction<ITask[]>) => {
       state.loading = true;
-      state.tasks = action.payload || [];
-      state.filteredTasks = action.payload || [];
+    
+      state.tasks = action.payload;
+      state.filteredTasks = action.payload;
       state.loading = false;
     },
     addTask: (state: ITaskState, action: PayloadAction<Omit<ITask, 'id' | 'completed'|'userId'>>) => {
       const taskData = {
         ...action.payload,
         userId:"USERID",
+        dueDate: new Date(action.payload.dueDate)
       };
       addTaskAsync(taskData).then(newTask => {
-        state.tasks.push(newTask);
-        state.filteredTasks = state.tasks;
+        fetchTasksAsync("USERID").then(tasks => {
+          const tasksWithSerializedDates = tasks.map(task => ({
+            ...task,
+            dueDate: task.dueDate.toISOString()
+          }));
+          state.tasks = tasksWithSerializedDates;
+          state.filteredTasks = tasksWithSerializedDates;
+        });
       });
-
     },
     updateTask: (state, action: PayloadAction<Partial<ITask> & { id: string }>) => {
       const index = state.tasks.findIndex(task => task.id === action.payload.id);
       if (index !== -1) {
-        updateTaskAsync(action.payload.id, action.payload).then(() => {
-          state.tasks[index] = { ...state.tasks[index], ...action.payload };
+        updateTaskAsync(action.payload.id, { 
+          ...action.payload, 
+          dueDate: action.payload.dueDate ? new Date(action.payload.dueDate) : new Date(state.tasks[index].dueDate)
+        }).then(() => {
+          const updatedTask = {
+            ...state.tasks[index],
+            ...action.payload,
+            dueDate: action.payload.dueDate || state.tasks[index].dueDate
+          };
+          state.tasks[index] = updatedTask;
           state.filteredTasks = state.tasks;
         });
       }
@@ -133,13 +148,17 @@ const taskSlice = createSlice({
           state.error = error.message;
         });
     },
-    updateBulkTasks: (state, action: PayloadAction<{ ids: string[], data: Partial<ITask> }>) => {
-      updateBulkTasksAsync(action.payload.ids, action.payload.data)
+    updateBulkTasks: (state, action: PayloadAction<{ ids: string[], status: string }>) => {
+      updateBulkTasksAsync(action.payload.ids, action.payload.status)
         .then((updatedTasks) => {
           updatedTasks.forEach(updatedTask => {
             const index = state.tasks.findIndex(task => task.id === updatedTask.id);
             if (index !== -1) {
-              state.tasks[index] = { ...state.tasks[index], ...updatedTask };
+              state.tasks[index] = { 
+                ...state.tasks[index], 
+                ...updatedTask,
+                dueDate: updatedTask.dueDate.toISOString()
+              };
             }
           });
           state.filteredTasks = state.tasks;

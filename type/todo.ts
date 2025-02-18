@@ -5,6 +5,7 @@ export interface ITodos extends Omit<Task, 'dueDate'> {
     category: ITaskCategory;
 }
 
-export interface IAddTask extends Omit<Task, 'id' | 'completed' | 'userId'> {
-    dueDate: Date;
+export interface IAddTask extends Omit<Task, 'id' | 'completed' | 'userId'|'dueDate'> {
+    dueDate: string;
+  
 }

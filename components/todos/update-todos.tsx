@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import {  updateTask } from "@/lib/redux/features/taskSlice";
+import {  ITask, updateTask } from "@/lib/redux/features/taskSlice";
 import { Button } from "@/components/ui/button";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import {
@@ -17,7 +17,7 @@ import { DatePicker } from "./data-picker";
 import { Task } from "@prisma/client";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: Task, sheetOpen?: boolean, setSheetOpen: ((n: boolean) => void) }) {
+export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: ITask, sheetOpen?: boolean, setSheetOpen: ((n: boolean) => void) }) {
     const dispatch = useDispatch();
     const [dueDate, setDueDate] = React.useState<Date>(new Date(todos.dueDate));
     const [title, setTitle] = React.useState<string>(todos.title);
@@ -38,7 +38,7 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: Task, sh
         }
      
         dispatch(updateTask({
-            dueDate: dueDate,
+            dueDate: dueDate.toISOString(),
             title,
             description,
             id: todos.id,
@@ -51,15 +51,17 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: Task, sh
     };
 
     return (
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmituUpdate();
+        }}>
         <Card className=" ">
+            
             <CardHeader>
                 <CardTitle>Update Todos</CardTitle>
             </CardHeader>
             <CardContent className=" grid">
-                <form onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmituUpdate();
-                }}>
+               
                     <div className="grid w-full items-center gap-4">
                         <div className="flex flex-col space-y-1.5">
                             <Label htmlFor="title">Title</Label>
@@ -86,12 +88,13 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: Task, sh
                        
 
                     </div>
-                </form>
+               
             </CardContent>
             <CardFooter className="flex justify-end gap-1">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <Button onClick={handleSubmituUpdate}>Update task</Button>
             </CardFooter>
-        </Card>
+           
+        </Card> </form>
     );
 }

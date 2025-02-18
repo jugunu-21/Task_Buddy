@@ -1,5 +1,4 @@
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-
 import * as React from "react"
 import { RootState } from "../../lib/redux/store"
 import { useEffect, } from 'react'
@@ -16,7 +15,6 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, MoreHorizontal, Loader2 } from "lucide-react"
-
 import { Button } from "../../components/ui/button"
 import { Checkbox } from "../../components/ui/checkbox"
 import {
@@ -37,14 +35,11 @@ import type { Task } from '@prisma/client'
 import { addTask,
     updateTask,
     removeTask,
-    // toggleTaskComplete,
-
     clearFilters,
     UpdateIntialTasks,
     ITask,
     removeBulkTasks} from "@/lib/redux/features/taskSlice";
 import { Input } from "../../components/ui/input"
-
 import {
     Table,
     TableBody,
@@ -83,7 +78,6 @@ const filters: FilterType[] = [
 
 export function TodosListTable({data}:{data:ITask[]}) {
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-
     const handleTaskSelect = (taskId: string) => {
         setSelectedTasks(prev => {
             if (prev.includes(taskId)) {
@@ -93,7 +87,6 @@ export function TodosListTable({data}:{data:ITask[]}) {
             }
         });
     };
-
     const handleBulkDelete = () => {
         if (selectedTasks.length > 0) {
             updatetodosReducer(removeBulkTasks(selectedTasks));
@@ -126,15 +119,19 @@ export function TodosListTable({data}:{data:ITask[]}) {
             [section]: !prev[section]
         }));
     };
-    const dispatch = useDispatch();
+    const updatetodosReducer = useDispatch()
     useEffect(() => {
         getAllTasks("USERID").then((tasks) => {
             console.log("tasks ",tasks)
-            dispatch(UpdateIntialTasks(tasks));
+            const tasksWithSerializedDates = tasks.map(task => ({
+                ...task,
+                dueDate: task.dueDate.toISOString()
+            }));
+            updatetodosReducer(UpdateIntialTasks(tasksWithSerializedDates));
         }).catch((error) => {
             console.error("Error fetching tasks:", error);
         });
-    }, [dispatch]);
+    }, [updatetodosReducer]);
 
     useEffect(() => {
         const timerId = setTimeout(() => {
@@ -148,15 +145,14 @@ export function TodosListTable({data}:{data:ITask[]}) {
 
     console.log("dataaa", data)
     const [checkedFilters, setCheckedFilters] = useState<string[]>(["all"]);
-    const [toDo, setTodo] = useState<Task>()
-    const updatetodosReducer = useDispatch()
+    const [toDo, setTodo] = useState<ITask>()
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [updateOpen, setUpdateOpen] = useState<boolean>(false)
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
-    const columns: ColumnDef<Task>[] = [
+    const columns: ColumnDef<ITask>[] = [
         // {
         //     id: "select",
         //     cell: ({ row }) => (

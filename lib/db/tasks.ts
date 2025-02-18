@@ -21,7 +21,12 @@ export async function updateTaskdb(id: string, data: Partial<Task>): Promise<Tas
     data
   });
 }
-
+export async function updateStatusdb(id: string, status:string): Promise<Task> {
+  return await prisma.task.update({
+    where: { id },
+    data: { status }
+  });
+}
 export async function deleteTask(id: string): Promise<Task> {
   return await prisma.task.delete({
     where: { id }

@@ -58,7 +58,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
             return;
         }
         const formData: IAddTask = {
-            dueDate,
+            dueDate:dueDate.toISOString(),
             title,
             description,
             category,
@@ -80,15 +80,16 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
     };
 
     return (<>
+     <form onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+            }}>
         <Card className="">
-            <CardHeader>
-                <CardTitle>Create Todos</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <form onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit();
-                }}>
+           
+                <CardHeader>
+                    <CardTitle>Create Todos</CardTitle>
+                </CardHeader>
+                <CardContent>
                     <div className="grid grid-cols-1  items-center gap-4">
                         <div className="flex flex-col space-y-1.5">
                             <Label htmlFor="title">Title</Label>
@@ -125,35 +126,32 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
                                     <SelectItem value="work">
                                         <div className="flex gap-1 justify-center items-center">
                                             <MdLocalPostOffice />
-                                            <div>work </div>
+                                            <span>work</span>
                                         </div>
                                     </SelectItem>
                                     <SelectItem value="personal">
                                         <div className="flex gap-1 justify-center items-center">
                                             <MdOutlineSelfImprovement />
-                                            <div>personal</div>
-
+                                            <span>personal</span>
                                         </div>
-
-
                                     </SelectItem>
                                     <SelectItem value="home">
                                         <div className="flex gap-1 justify-center items-center">
-                                            <FaHome /> <div>home</div>
+                                            <FaHome /> <span>home</span>
                                         </div>
-
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
-                </form>
+                
             </CardContent>
             <CardFooter className="flex justify-end">
                 <Button onClick={handleSubmit}>Add Task</Button>
             </CardFooter>
+          
         </Card>
-       
+        </form>
 
 
     </>
