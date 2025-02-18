@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import { FaHome } from "react-icons/fa";
 import { MdOutlineSelfImprovement } from "react-icons/md";
 import { MdLocalPostOffice } from "react-icons/md";
+import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean, setSheetOpen?: ((n: boolean) => void) }) {
 
     const dispatch = useDispatch();
@@ -146,7 +147,9 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
                     </div>
                 
             </CardContent>
-            <CardFooter className="flex justify-end">
+            <CardFooter className="flex justify-end gap-1">
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+           
                 <Button onClick={handleSubmit}>Add Task</Button>
             </CardFooter>
           

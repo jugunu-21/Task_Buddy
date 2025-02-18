@@ -341,7 +341,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                             Add Task
                         </Button>
                     </div> */}
-                    <div className="rounded-md border">
+                    <div className="">
                         <Table>
                             <TableHeader>
                                 {table.getHeaderGroups().map((headerGroup) => (
@@ -361,13 +361,15 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                     </TableRow>
                                 ))}
                             </TableHeader>
+                            <div className='h-4'></div>
                             <TableBody>
                                 {/* TO-DO Section */}
+                              
                                 <TableRow 
-                                    className="bg-blue-50 cursor-pointer hover:bg-blue-100"
+                                    className="bg-[#FAC3FF] cursor-pointer  rounded-t-xl hover:bg-[#f7d1fb]  "
                                     onClick={() => toggleSection('todo')}
                                 >
-                                    <TableCell colSpan={columns.length} className="py-2">
+                                    <TableCell colSpan={columns.length} className="py-2 rounded-t-xl ">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-semibold">To Do</h3>
@@ -383,13 +385,14 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                 </TableRow>
                                 {expandedSections.todo && table.getRowModel().rows
                                     .filter(row => row.original.status === "TO-DO")
-                                    .map((row) => (
+                                    .map((row, index, array) => (
                                         <TableRow
                                             key={row.id}
                                             data-state={row.getIsSelected() && "selected"}
+                                            className={`rounded-b-xl bg-muted/90 ${index === array.length - 1 ? 'border-b-0' : ''}`}
                                         >
                                             {row.getVisibleCells().map((cell) => (
-                                                <TableCell key={cell.id}>
+                                                <TableCell key={cell.id} className=''>
                                                     {flexRender(
                                                         cell.column.columnDef.cell,
                                                         cell.getContext()
@@ -398,10 +401,11 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                             ))}
                                         </TableRow>
                                     ))}
-                                
+                                    
+                                <div className='h-4'></div>
                                 {/* IN-PROGRESS Section */}
-                                <TableRow className="bg-yellow-50 cursor-pointer hover:bg-yellow-100">
-                                    <TableCell colSpan={columns.length} className="py-2">
+                                <TableRow className="bg-[#85D9F1]  cursor-pointer hover:bg-[#a3e2f4]">
+                                    <TableCell colSpan={columns.length} className="py-2 rounded-t-xl">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-semibold">In Progress</h3>
@@ -417,13 +421,14 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                 </TableRow>
                                 {expandedSections.inProgress && table.getRowModel().rows
                                     .filter(row => row.original.status === "IN-PROGRESS")
-                                    .map((row) => (
+                                    .map((row ,index,array) => (
                                         <TableRow
                                             key={row.id}
                                             data-state={row.getIsSelected() && "selected"}
+                                            className={` rounded-b-xl bg-muted/90 ${index === array.length - 1 ? 'border-b-0' : ''}`}
                                         >
                                             {row.getVisibleCells().map((cell) => (
-                                                <TableCell key={cell.id}>
+                                                <TableCell key={cell.id} className=''>
                                                     {flexRender(
                                                         cell.column.columnDef.cell,
                                                         cell.getContext()
@@ -432,10 +437,10 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                             ))}
                                         </TableRow>
                                     ))}
-                                
+                                 <div className='h-4'></div>
                                 {/* COMPLETED Section */}
-                                <TableRow className="bg-green-50 cursor-pointer hover:bg-green-100">
-                                    <TableCell colSpan={columns.length} className="py-2">
+                                <TableRow className="bg-[#CEFFCC] cursor-pointer hover:bg-[#d7fad6]">
+                                    <TableCell colSpan={columns.length} className="py-2 rounded-t-xl">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-semibold">Completed</h3>
@@ -451,13 +456,14 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                 </TableRow>
                                 {expandedSections.completed && table.getRowModel().rows
                                     .filter(row => row.original.status === "COMPLETED")
-                                    .map((row) => (
+                                    .map((row , index, array) => (
                                         <TableRow
                                             key={row.id}
                                             data-state={row.getIsSelected() && "selected"}
+                                            className={` rounded-b-xl bg-muted/90 ${index === array.length - 1 ? 'border-b-0' : ''}`}
                                         >
                                             {row.getVisibleCells().map((cell) => (
-                                                <TableCell key={cell.id}>
+                                                <TableCell key={cell.id} className=''>
                                                     {flexRender(
                                                         cell.column.columnDef.cell,
                                                         cell.getContext()
@@ -487,7 +493,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                             </TableBody>
                         </Table>
                     </div>
-                    <div className="flex items-center justify-end space-x-2 pt-2 pb-0">
+                    {/* <div className="flex items-center justify-end space-x-2 pt-2 pb-0">
                         <div className="space-x-2">
                             <Button
 
@@ -507,7 +513,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                                 Next
                             </Button>
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
                 {selectedTasks.length > 0 && (
