@@ -39,7 +39,8 @@ import { addTask,
     removeTask,
     toggleTaskComplete,
     setFilters,
-    clearFilters} from "@/lib/redux/features/taskSlice";
+    clearFilters,
+    UpdateIntialTasks} from "@/lib/redux/features/taskSlice";
 import { Input } from "../../components/ui/input"
 
 import {
@@ -64,6 +65,7 @@ import { Updatecard } from "./update-todos"
 import { Badge } from "../ui/badge"
 import { createDateFromISO } from "../../helpers/date-formator"
 import { getBadgeVariant } from "../../helpers/get-badges-varient"
+import { getAllTasks } from '@/lib/db/tasks';
 interface FilterType {
     value: string;
     label: string;
@@ -77,7 +79,15 @@ const filters: FilterType[] = [
 
 export function TodosListTable() {
     const [loading, setLoading] = useState(true);
-
+    const dispatch = useDispatch();
+    useEffect(() => {
+        getAllTasks("USERID").then((tasks) => {
+            console.log("tasks ",tasks)
+            dispatch(UpdateIntialTasks(tasks));
+        }).catch((error) => {
+            console.error("Error fetching tasks:", error);
+        });
+    }, [dispatch]);
 
     useEffect(() => {
         const timerId = setTimeout(() => {
@@ -88,8 +98,8 @@ export function TodosListTable() {
     }, []);
     // const [data, setData] = useState<ITodos[]>([])
     const data = useSelector((state: RootState) => state.tasks.tasks)
-    // setData(newdata)
-    console.log("data", data)
+
+    console.log("dataaa", data)
     const [checkedFilters, setCheckedFilters] = useState<string[]>(["all"]);
     const [toDo, setTodo] = useState<Task>()
     const updatetodosReducer = useDispatch()
