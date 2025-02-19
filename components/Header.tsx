@@ -31,7 +31,7 @@ export default function Header( {viewMode, setViewMode}: {viewMode: 'list' | 'bo
             />
             <span className="text-purple-500 text-xl font-bold">TaskBuddy</span>
           </div>
-          <div className="flex items-center space-x-3 mt-2">
+          <div className="hidden sm:flex items-center space-x-3 mt-2">
             <button 
               onClick={() => setViewMode('list')}
               className={`px-3 py-2 text-sm font-medium text-gray-700 ${viewMode === 'list' ? 'border-b-2 border-purple-500' : ''} hover:border-b-2 hover:border-purple-500 focus:outline-none focus:bg-gray-100 focus:border-b-2 focus:border-purple-500 flex items-center gap-2`}
