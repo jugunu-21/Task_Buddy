@@ -30,10 +30,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
         completed: true
     });
 
-    const handleUpdateTask = (task: ITask) => {
-        setSelectedTask(task);
-        setUpdateOpen(true);
-    };
+
 
     const dispatch = useDispatch();
 
@@ -74,21 +71,16 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
     const [searchValue, setSearchValue] = React.useState<string>("");
     const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
     const [selectedDueDate, setSelectedDueDate] = React.useState<string>("all");
-
     const filteredData = React.useMemo(() => {
         return data.filter(task => {
             const matchesSearch = task.title.toLowerCase().includes(searchValue.toLowerCase());
-            
             const matchesCategory = selectedCategory === "all" || task.category === selectedCategory;
-            
             const matchesDueDate = selectedDueDate === "all" || (() => {
                 const taskDate = new Date(task.dueDate);
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
-                
                 const tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
+                tomorrow.setDate(tomorrow.getDate() + 1);               
                 const weekEnd = new Date(today);
                 weekEnd.setDate(weekEnd.getDate() + 7);
                 
@@ -128,18 +120,18 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
             <div className="w-full h-full">
                 {viewMode === 'list' ? (
                     <TodosListTable 
-                    setAddOpen={setAddOpen}
-                    setLoading={setLoading}
                         data={filteredData}
+                        setUpdateOpen={setUpdateOpen}
                         selectedTasks={selectedTasks}
+                        setSelectedTask={setSelectedTask}
                         handleTaskSelect={handleTaskSelect}
                         handleBulkDelete={handleBulkDelete}
                         handleBulkStatusUpdate={handleBulkStatusUpdate}
                         expandedSections={expandedSections}
                         toggleSection={toggleSection}
                         loading={loading}
-                        setUpdateOpen={setUpdateOpen}
-                        setToDo={setToDo}
+                        setLoading={setLoading}
+                        setAddOpen={setAddOpen}
                     />
                 ) : (
                     <TodoBoardTable 

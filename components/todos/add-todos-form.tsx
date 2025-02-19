@@ -23,9 +23,7 @@ import {
 import { DatePicker } from "./data-picker";
 import {IAddTask, ITaskCategory, ITaskStatus, } from "@/type/todo";
 import toast from "react-hot-toast";
-import { SiComma } from "react-icons/si";
-import { useEffect, useState } from "react";
-import { FaHome } from "react-icons/fa";
+
 import { MdOutlineSelfImprovement } from "react-icons/md";
 import { MdLocalPostOffice } from "react-icons/md";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";

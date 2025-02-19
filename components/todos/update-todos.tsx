@@ -58,7 +58,7 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: ITask, s
         <Card className=" ">
             
             <CardHeader>
-                <CardTitle>Update Todos</CardTitle>
+                <CardTitle>Update Task</CardTitle>
             </CardHeader>
             <CardContent className=" grid">
                

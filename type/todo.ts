@@ -1,5 +1,5 @@
 import { Task } from '@prisma/client';
-export type ITaskCategory = 'work' | 'personal' | 'home';
+export type ITaskCategory = 'work' | 'personal' ;
 export type ITaskStatus = 'TO-DO' | 'IN-PROGRESS' | 'COMPLETED';
 export interface ITodos extends Omit<Task, 'dueDate'> {
     dueDate: Date;

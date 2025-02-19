@@ -65,6 +65,10 @@ import { getBadgeVariant } from "../../helpers/get-badges-varient"
 import { getAllTasks } from '@/lib/db/tasks';
 import { CardWithForm } from './add-todos-form';
 import FiltersAndSearch from '../FiltersAndSearch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { DatePicker } from "./data-picker";
+import { IAddTask, ITaskCategory, ITaskStatus } from '@/type/todo';
+import toast from 'react-hot-toast';
 interface FilterType {
     value: string;
     label: string;
@@ -79,6 +83,7 @@ const filters: FilterType[] = [
 interface TodosListTableProps {
     data: ITask[];
     selectedTasks: string[];
+    setSelectedTask: (task: ITask) => void;
     handleTaskSelect: (taskId: string) => void;
     handleBulkDelete: () => void;
     handleBulkStatusUpdate: (status: string) => void;
@@ -90,13 +95,14 @@ interface TodosListTableProps {
     toggleSection: (section: 'todo' | 'inProgress' | 'completed') => void;
     loading: boolean;
     setUpdateOpen: (open: boolean) => void;
-    setToDo: (task: ITask) => void;
     setLoading:(loading: boolean) => void;
 }
+import { BsArrowReturnLeft } from "react-icons/bs";
 
 export function TodosListTable({
     data,
     selectedTasks,
+    setSelectedTask,
     handleTaskSelect,
     handleBulkDelete,
     handleBulkStatusUpdate,
@@ -105,9 +111,38 @@ export function TodosListTable({
     loading,
     setLoading,
     setUpdateOpen,
-    setToDo,
-    setAddOpen
 }: TodosListTableProps & { setAddOpen: (open: boolean) => void }) {
+    const [showAddTaskForm, setShowAddTaskForm] = useState(false);
+    const [newTaskTitle, setNewTaskTitle] = useState("");
+    const [newTaskStatus, setNewTaskStatus] = useState<string>();
+    const [newTaskDueDate, setNewTaskDueDate] = useState<Date>();
+    const [newTaskCategory, setNewTaskCategory] = useState<string>();
+    const handleUpdateTask = (task: ITask) => {
+        setSelectedTask(task);
+        setUpdateOpen(true);
+    };
+    const handleAddTask = () => {
+        if (!newTaskTitle || !newTaskStatus || !newTaskDueDate || !newTaskCategory) {
+            toast.error("All fields are required");
+            return;
+        }
+
+        const formData: IAddTask = {
+            title: newTaskTitle,
+            status: newTaskStatus as ITaskStatus,
+            dueDate: newTaskDueDate.toISOString(),
+            category: newTaskCategory as ITaskCategory,
+            description: ""
+        };
+
+        dispatch(addTask(formData));
+        setNewTaskTitle("");
+        setNewTaskStatus(undefined);
+        setNewTaskDueDate(undefined);
+        setNewTaskCategory(undefined);
+        setShowAddTaskForm(false);
+    };
+
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] =
@@ -257,10 +292,7 @@ export function TodosListTable({
                                 Delete
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => {
-                                setUpdateOpen(true);  setToDo(payment)
-
-                            }}>
+                            <DropdownMenuItem onClick={()=>handleUpdateTask(payment)}>
                                 Update
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -341,6 +373,79 @@ export function TodosListTable({
                                         </div>
                                     </TableCell>
                                 </TableRow>
+                                {expandedSections.todo && (
+                                    <>
+                                        <TableRow className="bg-muted/90">
+                                            <TableCell colSpan={5}>
+                                                <Button 
+                                                    variant="ghost" 
+                                                    onClick={() => setShowAddTaskForm(true)}
+                                                    className=" text-xs "
+                                                >
+                                                    + ADD TASK
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                        {showAddTaskForm && (
+                                            <TableRow className="bg-muted/90">
+                                                <TableCell colSpan={5} className='w-full'>
+                                                    <div className="flex items-center  justify-between   px-20   ">
+                                                        <div className=' flex-col gap-4'>
+                                                        <Input
+                                                            placeholder="Task Title"
+                                                            className="w-full border-none shadow-none text-xs"
+                                                            value={newTaskTitle}
+                                                            onChange={(e) => setNewTaskTitle(e.target.value)}
+                                                        />
+                                                            <div className='flex-row mt-2'>
+                                                            <Button variant="default" size="sm" onClick={handleAddTask} className='bg-purple-600 text-white rounded-3xl  hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors duration-200'>ADD <BsArrowReturnLeft /></Button>
+
+                                                            
+                                                            <Button variant="ghost" size="sm" onClick={() => {
+                                                                setNewTaskTitle("");
+                                                                setNewTaskStatus(undefined);
+                                                                setNewTaskDueDate(undefined);
+                                                                setNewTaskCategory(undefined);
+                                                                setShowAddTaskForm(false);
+                                                            }}>CANCEL</Button>
+                                                            </div>
+                                                        </div>
+                                                      
+                                                                                                                <div className="flex gap-2">
+                                                            
+                                                        </div>
+
+                                                         <div className="w-[150px]">
+                                                            <DatePicker dueDate={newTaskDueDate} setDueDate={setNewTaskDueDate} />
+                                                        </div>
+                                                        <Select value={newTaskStatus} onValueChange={setNewTaskStatus}>
+                                                        <SelectTrigger className="w-10  aspect-square rounded-full">
+                                                                <SelectValue placeholder="+" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="TO-DO">To Do</SelectItem>
+                                                                <SelectItem value="IN-PROGRESS">In Progress</SelectItem>
+                                                                <SelectItem value="COMPLETED">Completed</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                       
+                                                        <Select value={newTaskCategory} onValueChange={setNewTaskCategory}>
+                                                            <SelectTrigger className="w-10  aspect-square rounded-full">
+                                                                <SelectValue placeholder="+" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="work">Work</SelectItem>
+                                                                <SelectItem value="personal">Personal</SelectItem>
+                                                              
+                                                            </SelectContent>
+                                                        </Select>
+
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </>
+                                )}
                                 {expandedSections.todo && table.getRowModel().rows
                                     .filter(row => row.original.status === "TO-DO")
                                     .map((row, index, array) => (

@@ -16,13 +16,18 @@ import {
 // export function DatePicker({ dueDate setDueDate }: { setDueDate: (gvj: Date) => void })
 
 export function DatePicker({ dueDate, setDueDate }: { dueDate: Date | undefined; setDueDate: (date: Date) => void }) {
-    const [date, setDate] = React.useState<Date>()
+    const [date, setDate] = React.useState<Date | undefined>(dueDate)
     React.useEffect(() => {
-        if (dueDate !== date && date != undefined) {
-            setDueDate(date);
-            console.log()
+        if (dueDate && dueDate !== date) {
+            setDate(dueDate);
         }
-    }, [date]);
+    }, [dueDate]);
+
+    React.useEffect(() => {
+        if (date) {
+            setDueDate(date);
+        }
+    }, [date, setDueDate]);
     return (
         <Popover>
             <PopoverTrigger asChild>
