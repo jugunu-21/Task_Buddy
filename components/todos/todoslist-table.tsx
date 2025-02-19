@@ -76,50 +76,45 @@ const filters: FilterType[] = [
 
 ];
 
-export function TodosListTable({data}:{data:ITask[]}) {
-    const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-    const handleTaskSelect = (taskId: string) => {
-        setSelectedTasks(prev => {
-            if (prev.includes(taskId)) {
-                return prev.filter(id => id !== taskId);
-            } else {
-                return [...prev, taskId];
-            }
-        });
+interface TodosListTableProps {
+    data: ITask[];
+    selectedTasks: string[];
+    handleTaskSelect: (taskId: string) => void;
+    handleBulkDelete: () => void;
+    handleBulkStatusUpdate: (status: string) => void;
+    expandedSections: {
+        todo: boolean;
+        inProgress: boolean;
+        completed: boolean;
     };
-    const handleBulkDelete = () => {
-        if (selectedTasks.length > 0) {
-            updatetodosReducer(removeBulkTasks(selectedTasks));
-            setSelectedTasks([]);
-        }
-    };
+    toggleSection: (section: 'todo' | 'inProgress' | 'completed') => void;
+    loading: boolean;
+    setUpdateOpen: (open: boolean) => void;
+    setToDo: (task: ITask) => void;
+    setLoading:(loading: boolean) => void;
+}
 
-    const handleBulkStatusUpdate = (newStatus: string) => {
-        if (selectedTasks.length > 0) {
-            selectedTasks.forEach(taskId => {
-                updatetodosReducer(updateTask({
-                    id: taskId,
-                    status: newStatus
-                }));
-            });
-            setSelectedTasks([]);
-        }
-    };
-    const [loading, setLoading] = useState(true);
-    const [expandedSections, setExpandedSections] = useState({
-        todo: true,
-        inProgress: false,
-        completed: false
-    });
-    const [addOpen, setAddOpen] = useState<boolean>(false);
+export function TodosListTable({
+    data,
+    selectedTasks,
+    handleTaskSelect,
+    handleBulkDelete,
+    handleBulkStatusUpdate,
+    expandedSections,
+    toggleSection,
+    loading,
+    setLoading,
+    setUpdateOpen,
+    setToDo,
+    setAddOpen
+}: TodosListTableProps & { setAddOpen: (open: boolean) => void }) {
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] =
+        React.useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = React.useState({})
 
-    const toggleSection = (section: 'todo' | 'inProgress' | 'completed') => {
-        setExpandedSections(prev => ({
-            ...prev,
-            [section]: !prev[section]
-        }));
-    };
-    const updatetodosReducer = useDispatch()
+    const dispatch = useDispatch();
     useEffect(() => {
         getAllTasks("USERID").then((tasks) => {
             console.log("tasks ",tasks)
@@ -127,11 +122,11 @@ export function TodosListTable({data}:{data:ITask[]}) {
                 ...task,
                 dueDate: task.dueDate.toISOString()
             }));
-            updatetodosReducer(UpdateIntialTasks(tasksWithSerializedDates));
+            dispatch(UpdateIntialTasks(tasksWithSerializedDates));
         }).catch((error) => {
             console.error("Error fetching tasks:", error);
         });
-    }, [updatetodosReducer]);
+    }, [dispatch]);
 
     useEffect(() => {
         const timerId = setTimeout(() => {
@@ -144,14 +139,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
 
 
     console.log("dataaa", data)
-    const [checkedFilters, setCheckedFilters] = useState<string[]>(["all"]);
-    const [toDo, setTodo] = useState<ITask>()
-    const [sorting, setSorting] = React.useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-    const [updateOpen, setUpdateOpen] = useState<boolean>(false)
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
-    const [rowSelection, setRowSelection] = React.useState({})
+
     const columns: ColumnDef<ITask>[] = [
         // {
         //     id: "select",
@@ -264,13 +252,13 @@ export function TodosListTable({data}:{data:ITask[]}) {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() => updatetodosReducer(removeTask(payment.id))}
+                                onClick={() => dispatch(removeTask(payment.id))}
                             >
                                 Delete
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => {
-                                setUpdateOpen(true); setTodo(payment)
+                                setUpdateOpen(true);  setToDo(payment)
 
                             }}>
                                 Update
@@ -299,20 +287,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
             rowSelection,
         },
     })
-    // const toggleFilter = (filterValue: string) => {
-    //     const newFilters = [...checkedFilters]; // Create a copy of the current filters
 
-    //     if (newFilters.includes(filterValue)) {
-    //         // Remove the filter if it already exists
-    //         newFilters.splice(newFilters.indexOf(filterValue), 1);
-    //     } else {
-    //         // Add the filter if it doesn't exist
-    //         newFilters.push(filterValue);
-    //     }
-    //     setCheckedFilters(newFilters);
-    //     console.log("Updated filters:", newFilters);
-    //     return newFilters
-    // };
     return (
         <Card className="h-full">
             <CardContent>
@@ -323,24 +298,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                             } 
                             ONCLICKBUTTON={() => setAddOpen(true)}
                             />
-                    {/* <div className="flex items-center py-4 justify-between ">
-                        <Input
-                            placeholder="Search for title..."
-                            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-                            onChange={(event) =>
-                                table.getColumn("title")?.setFilterValue(event.target.value)
-                            }
-                            className="max-w-sm"
-                        />
-                        
-                        <Button
-                            onClick={() => setAddOpen(true)}
-                            className="ml-4"
-                            variant="default"
-                        >
-                            Add Task
-                        </Button>
-                    </div> */}
+                    
                     <div className="">
                         <Table>
                             <TableHeader>
@@ -493,27 +451,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                             </TableBody>
                         </Table>
                     </div>
-                    {/* <div className="flex items-center justify-end space-x-2 pt-2 pb-0">
-                        <div className="space-x-2">
-                            <Button
-
-                                variant="outline"
-                                size="sm"
-                                onClick={() => table.previousPage()}
-                                disabled={!table.getCanPreviousPage()}
-                            >
-                                Previous
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => table.nextPage()}
-                                disabled={!table.getCanNextPage()}
-                            >
-                                Next
-                            </Button>
-                        </div>
-                    </div> */}
+                  
 
                 </div>
                 {selectedTasks.length > 0 && (
@@ -580,38 +518,7 @@ export function TodosListTable({data}:{data:ITask[]}) {
                     </div>
                 )}
             </CardContent>
-            <AlertDialog open={updateOpen} onOpenChange={setUpdateOpen}>
-                <AlertDialogContent >
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            {toDo !== undefined &&
-                                <Updatecard
-                                    todos={toDo}
-                                    sheetOpen={updateOpen}
-                                    setSheetOpen={setUpdateOpen}
-                                />}
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-            <AlertDialog open={addOpen} onOpenChange={setAddOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Add New Task</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            <CardWithForm
-                                sheetOpen={addOpen}
-                                setSheetOpen={setAddOpen}
-                            />
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            
         </Card >
     )
 }

@@ -4,7 +4,7 @@ import { auth } from '@/lib/firebase';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-export default function Header() {
+export default function Header( {viewMode, setViewMode}: {viewMode: 'list' | 'board', setViewMode: (viewMode: 'list' | 'board') => void}) {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -32,15 +32,20 @@ export default function Header() {
             <span className="text-purple-500 text-xl font-bold">TaskBuddy</span>
           </div>
           <div className="flex items-center space-x-3 mt-2">
-          <button className=" py-2 text-sm font-medium text-gray-700 hover:border-b-2 hover:border-purple-500  focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 flex items-center gap-2">
+            <button 
+              onClick={() => setViewMode('list')}
+              className={`px-3 py-2 text-sm font-medium text-gray-700 ${viewMode === 'list' ? 'border-b-2 border-purple-500' : ''} hover:border-b-2 hover:border-purple-500 focus:outline-none focus:bg-gray-100 focus:border-b-2 focus:border-purple-500 flex items-center gap-2`}
+            >
               <Image src="/file.svg" alt="List Icon" width={16} height={16} />
               List
             </button>
-            <button className=" py-2 text-sm font-medium text-gray-700  hover:border-b-2 hover:border-purple-500  focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 flex items-center gap-2">
+            <button 
+              onClick={() => setViewMode('board')}
+              className={`px-3 py-2 text-sm font-medium text-gray-700 ${viewMode === 'board' ? 'border-b-2 border-purple-500' : ''} hover:border-b-2 hover:border-purple-500 focus:outline-none focus:bg-gray-100  focus:border-b-2 focus:border-purple-500 flex items-center gap-2`}
+            >
               <Image src="/globe.svg" alt="Board Icon" width={16} height={16} />
               Board
             </button>
-           
           </div>
         </div>
         <div className=" ">
