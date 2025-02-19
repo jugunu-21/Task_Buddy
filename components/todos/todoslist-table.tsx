@@ -331,9 +331,9 @@ export function TodosListTable({
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-semibold">To Do</h3>
-                                                <Badge variant="secondary">
-                                                    {table.getRowModel().rows.filter(row => row.original.status === "TO-DO").length}
-                                                </Badge>
+                                               
+                                                   ({table.getRowModel().rows.filter(row => row.original.status === "TO-DO").length})
+                                                
                                             </div>
                                             <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('todo'); }}>
                                                 <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.todo ? '' : '-rotate-180'}`} />
@@ -367,9 +367,9 @@ export function TodosListTable({
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-semibold">In Progress</h3>
-                                                <Badge variant="secondary">
+                                                (
                                                     {table.getRowModel().rows.filter(row => row.original.status === "IN-PROGRESS").length}
-                                                </Badge>
+                                               )
                                             </div>
                                             <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('inProgress'); }}>
                                                 <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.inProgress ? '' : '-rotate-180'}`} />
@@ -402,9 +402,9 @@ export function TodosListTable({
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-semibold">Completed</h3>
-                                                <Badge variant="secondary">
+                                             (
                                                     {table.getRowModel().rows.filter(row => row.original.status === "COMPLETED").length}
-                                                </Badge>
+                                             )
                                             </div>
                                             <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('completed'); }}>
                                                 <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.completed ? '' : '-rotate-180'}`} />
