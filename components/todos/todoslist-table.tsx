@@ -464,7 +464,9 @@ export function TodosListTable({
                                         </TableRow>
                                     ))}
                                     
-                                    <TableRow className='h-4 border-none'> </TableRow>
+                                    <TableRow className='h-4 border-none'>
+    <TableCell colSpan={columns.length}></TableCell>
+</TableRow>
                                 {/* IN-PROGRESS Section */}
                                 <TableRow className="bg-[#85D9F1]  cursor-pointer hover:bg-[#a3e2f4]">
                                     <TableCell colSpan={columns.length} className="py-2 rounded-t-xl">
@@ -499,7 +501,9 @@ export function TodosListTable({
                                             ))}
                                         </TableRow>
                                     ))}
-                                 <TableRow className='h-4 border-none'> </TableRow>
+                                 <TableRow className='h-4 border-none'>
+    <TableCell colSpan={columns.length}></TableCell>
+</TableRow>
                               
                                 <TableRow className="bg-[#CEFFCC] cursor-pointer hover:bg-[#d7fad6] ">
                                     <TableCell colSpan={columns.length} className="py-2 rounded-t-xl">

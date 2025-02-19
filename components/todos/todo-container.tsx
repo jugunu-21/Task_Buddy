@@ -152,13 +152,11 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                 <AlertDialog open={addOpen} onOpenChange={setAddOpen}>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            {/* <AlertDialogTitle>Add New Task</AlertDialogTitle> */}
-                            <AlertDialogDescription>
-                                <CardWithForm
-                                    sheetOpen={addOpen}
-                                    setSheetOpen={setAddOpen}
-                                />
-                            </AlertDialogDescription>
+                            <AlertDialogTitle></AlertDialogTitle>
+                            <CardWithForm
+                                sheetOpen={addOpen}
+                                setSheetOpen={setAddOpen}
+                            />
                         </AlertDialogHeader>
                         <AlertDialogFooter />
                     </AlertDialogContent>
@@ -168,7 +166,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle>Update Task</AlertDialogTitle>
-                            <AlertDialogDescription>
+                            {/* <AlertDialogDescription> */}
                                 {selectedTask && (
                                     <Updatecard
                                         todos={selectedTask}
@@ -176,7 +174,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                                         setSheetOpen={setUpdateOpen}
                                     />
                                 )}
-                            </AlertDialogDescription>
+                            {/* </AlertDialogDescription> */}
                         </AlertDialogHeader>
                         <AlertDialogFooter />
                     </AlertDialogContent>

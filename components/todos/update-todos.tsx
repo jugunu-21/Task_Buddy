@@ -4,6 +4,13 @@ import {  ITask, updateTask } from "@/lib/redux/features/taskSlice";
 import { Button } from "@/components/ui/button";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     Card,
     CardContent,
     CardFooter,
@@ -22,6 +29,8 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: ITask, s
     const [dueDate, setDueDate] = React.useState<Date>(new Date(todos.dueDate));
     const [title, setTitle] = React.useState<string>(todos.title);
     const [description, setDescription] = React.useState<string>(todos.description);
+    const [status, setStatus] = React.useState<string>(todos.status);
+    const [category, setCategory] = React.useState<string>(todos.category);
     const handleSubmituUpdate = () => {
         if (!title) {
             toast.error("Title is required");
@@ -42,7 +51,8 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: ITask, s
             title,
             description,
             id: todos.id,
-            status: todos.status
+            status,
+            category
         }));
         setSheetOpen(false)
         setTitle('');
@@ -85,8 +95,31 @@ export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: ITask, s
                             <Label htmlFor="due_date">Due Date</Label>
                             <DatePicker dueDate={dueDate} setDueDate={setDueDate} />
                         </div>
-                       
-
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="status">Status</Label>
+                            <Select value={status} onValueChange={setStatus}>
+                                <SelectTrigger id="status">
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="TO-DO">To Do</SelectItem>
+                                    <SelectItem value="IN-PROGRESS">In Progress</SelectItem>
+                                    <SelectItem value="COMPLETED">Completed</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="category">Category</Label>
+                            <Select value={category} onValueChange={setCategory}>
+                                <SelectTrigger id="category">
+                                    <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="work">Work</SelectItem>
+                                    <SelectItem value="personal">Personal</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                
             </CardContent>

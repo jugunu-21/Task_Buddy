@@ -34,7 +34,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
     const [title, setTitle] = React.useState<string>("");
     const [description, setDescription] = React.useState<string>("");
     const [category, setCategory] = React.useState<ITaskCategory>();
-    const [status, setStatus] = React.useState<ITaskStatus>();
+    const [status, setStatus] = React.useState<ITaskStatus>("TO-DO");
     const handleSubmit = () => {
 
 
