@@ -92,6 +92,7 @@ interface TodosListTableProps {
         inProgress: boolean;
         completed: boolean;
     };
+    handleUpdateTask: (task: ITask) => void;
     toggleSection: (section: 'todo' | 'inProgress' | 'completed') => void;
     loading: boolean;
     setUpdateOpen: (open: boolean) => void;
@@ -100,6 +101,7 @@ interface TodosListTableProps {
 import { BsArrowReturnLeft } from "react-icons/bs";
 
 export function TodosListTable({
+    handleUpdateTask,
     data,
     selectedTasks,
     setSelectedTask,
@@ -117,10 +119,7 @@ export function TodosListTable({
     const [newTaskStatus, setNewTaskStatus] = useState<string>();
     const [newTaskDueDate, setNewTaskDueDate] = useState<Date>();
     const [newTaskCategory, setNewTaskCategory] = useState<string>();
-    const handleUpdateTask = (task: ITask) => {
-        setSelectedTask(task);
-        setUpdateOpen(true);
-    };
+  
     const handleAddTask = () => {
         if (!newTaskTitle || !newTaskStatus || !newTaskDueDate || !newTaskCategory) {
             toast.error("All fields are required");

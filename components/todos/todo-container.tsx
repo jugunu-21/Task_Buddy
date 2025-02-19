@@ -104,7 +104,10 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
             return matchesSearch && matchesCategory && matchesDueDate;
         });
     }, [data, searchValue, selectedCategory, selectedDueDate]);
-
+    const handleUpdateTask = (task: ITask) => {
+        setSelectedTask(task);
+        setUpdateOpen(true);
+    };
     if (!data) return null;
     return (
         <Card className="h-full">
@@ -120,6 +123,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
             <div className="w-full h-full">
                 {viewMode === 'list' ? (
                     <TodosListTable 
+                    handleUpdateTask={handleUpdateTask}
                         data={filteredData}
                         setUpdateOpen={setUpdateOpen}
                         selectedTasks={selectedTasks}
@@ -135,6 +139,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                     />
                 ) : (
                     <TodoBoardTable 
+                    handleUpdateTask={handleUpdateTask}
                         data={filteredData}
                         setUpdateOpen={setUpdateOpen}
                         setToDo={setToDo}
