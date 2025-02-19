@@ -21,7 +21,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { DatePicker } from "./data-picker";
-import {IAddTask, ITaskCategory, } from "@/type/todo";
+import {IAddTask, ITaskCategory, ITaskStatus, } from "@/type/todo";
 import toast from "react-hot-toast";
 import { SiComma } from "react-icons/si";
 import { useEffect, useState } from "react";
@@ -36,6 +36,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
     const [title, setTitle] = React.useState<string>("");
     const [description, setDescription] = React.useState<string>("");
     const [category, setCategory] = React.useState<ITaskCategory>();
+    const [status, setStatus] = React.useState<ITaskStatus>();
     const handleSubmit = () => {
 
 
@@ -58,12 +59,16 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
             toast.error("Category is required");
             return;
         }
+        if (!status) {
+            toast.error("Category is required");
+            return;
+        }
         const formData: IAddTask = {
             dueDate:dueDate.toISOString(),
             title,
             description,
             category,
-            status: "TO-DO",
+            status
            
             // TODO: Replace with actual user ID from auth context
         };
@@ -85,70 +90,92 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
                 e.preventDefault();
                 handleSubmit();
             }}>
-        <Card className="">
-           
-                <CardHeader>
-                    <CardTitle>Create Todos</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1  items-center gap-4">
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="title">Title</Label>
-                            <Input
-                                id="title"
-                                placeholder="Title"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="description">Description</Label>
-                            <Input
-                                id="description"
-                                placeholder="Task description"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                        </div>
-                        <div className=" flex flex-col space-y-1.5">
-                            <Label htmlFor="due_date">Due Date</Label>
-                            <DatePicker dueDate={dueDate} setDueDate={setDueDate} />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="category">Category</Label>
+        <Card className="w-full text-slate-500">
+            <CardHeader>
+                <CardTitle>Create Task</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="grid w-full items-center gap-4">
+                    <div className="flex flex-col space-y-1.5">
+                        {/* <Label htmlFor="title">Task title</Label> */}
+                        <Input
+                            id="title"
+                            placeholder="Task title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                        {/* <Label htmlFor="description">Description</Label> */}
+                        <Input
+                            id="description"
+                            placeholder="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="min-h-[80px] placeholder:top-0 placeholder:absolute placeholder:text-sm placeholder:text-gray-500 pt-4"
+                        />
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="flex flex-col space-y-1.5 text-xs">
+                            <Label htmlFor="category" className="text-xs " >Task Category*</Label>
                             <Select
                                 onValueChange={(value: ITaskCategory) => setCategory(value)}
-
                             >
                                 <SelectTrigger id="category">
-                                    <SelectValue placeholder="Select a category" />
+                                    <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent position="popper">
                                     <SelectItem value="work">
-                                        <div className="flex gap-1 justify-center items-center">
-                                            <MdLocalPostOffice />
-                                            <span>work</span>
+                                        <div className="flex items-center gap-2">
+                                            <MdLocalPostOffice className="text-blue-500" />
+                                            <span>Work</span>
                                         </div>
                                     </SelectItem>
                                     <SelectItem value="personal">
-                                        <div className="flex gap-1 justify-center items-center">
-                                            <MdOutlineSelfImprovement />
-                                            <span>personal</span>
+                                        <div className="flex items-center gap-2">
+                                            <MdOutlineSelfImprovement className="text-purple-500" />
+                                            <span>Personal</span>
                                         </div>
                                     </SelectItem>
-                                   
                                 </SelectContent>
                             </Select>
                         </div>
+                        <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="due_date" className="text-xs ">Due on*</Label>
+                                <DatePicker dueDate={dueDate} setDueDate={setDueDate} />
+                            </div>
+                        
+                            
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="status" className="text-xs "> Task Status*</Label>
+                                <Select
+                                    defaultValue="TO-DO"
+                                    onValueChange={(value:ITaskStatus) => setStatus(value)}
+                                >
+                                    <SelectTrigger id="status">
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper">
+                                        <SelectItem value="TO-DO">To-Do</SelectItem>
+                                        <SelectItem value="IN-PROGRESS">In-Progress</SelectItem>
+                                        <SelectItem value="COMPLETED">Completed</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        
                     </div>
-                
+                    {/* <div className="flex flex-col space-y-1.5">
+                        <Label>Attachment</Label>
+                        <div className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50">
+                            <p className="text-sm text-gray-500">Drop your files here or Update</p>
+                        </div>
+                    </div> */}
+                </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-1">
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-           
-                <Button onClick={handleSubmit}>Add Task</Button>
+            <CardFooter className="flex justify-between">
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <Button onClick={handleSubmit}>Create task</Button>
             </CardFooter>
-          
         </Card>
         </form>
 

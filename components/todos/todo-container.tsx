@@ -155,7 +155,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                 <AlertDialog open={addOpen} onOpenChange={setAddOpen}>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Add New Task</AlertDialogTitle>
+                            {/* <AlertDialogTitle>Add New Task</AlertDialogTitle> */}
                             <AlertDialogDescription>
                                 <CardWithForm
                                     sheetOpen={addOpen}
