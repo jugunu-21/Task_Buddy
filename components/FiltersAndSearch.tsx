@@ -7,20 +7,21 @@ interface FiltersAndSearchProps {
   VALUESEARCH: string;
   ONCHANGESEARCH: (event: React.ChangeEvent<HTMLInputElement>) => void;
   ONCLICKBUTTON: () => void;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
+  selectedDueDate: string;
+  setSelectedDueDate: (dueDate: string) => void;
 }
 
-export default function FiltersAndSearch({ VALUESEARCH, ONCHANGESEARCH, ONCLICKBUTTON }: FiltersAndSearchProps) {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedDueDate, setSelectedDueDate] = useState('all');
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
-  };
-
-  const handleDueDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDueDate(e.target.value);
-  };
-
+export default function FiltersAndSearch({ 
+  VALUESEARCH, 
+  ONCHANGESEARCH, 
+  ONCLICKBUTTON,
+  selectedCategory,
+  setSelectedCategory,
+  selectedDueDate,
+  setSelectedDueDate
+}: FiltersAndSearchProps) {
   return (
     <div className="bg-white py-4 px-4 sm:px-6 lg:px-8 border-b border-gray-200">
       <div className="max-w-7xl mx-auto">
@@ -51,7 +52,7 @@ export default function FiltersAndSearch({ VALUESEARCH, ONCHANGESEARCH, ONCLICKB
             <div className="w-40">
               <select
                 value={selectedCategory}
-                onChange={handleCategoryChange}
+                onChange={(e) => setSelectedCategory(e.target.value)}
                 className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-3xl shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
               >
                 <option value="all"> Categories</option>
@@ -62,7 +63,7 @@ export default function FiltersAndSearch({ VALUESEARCH, ONCHANGESEARCH, ONCLICKB
             <div className="w-40">
               <select
                 value={selectedDueDate}
-                onChange={handleDueDateChange}
+                onChange={(e) => setSelectedDueDate(e.target.value)}
                 className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-3xl shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
               >
                 <option value="all">Due Dates</option>
