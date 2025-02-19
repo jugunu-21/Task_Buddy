@@ -1,20 +1,13 @@
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/lib/redux/store";
-import { Badge } from "../ui/badge";
+import { useDispatch } from "react-redux";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { Checkbox } from "../ui/checkbox";
 import {MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { useState, useEffect } from "react";
-import { ITask, removeTask, updateTask } from "@/lib/redux/features/taskSlice";
+import { ITask, removeTask } from "@/lib/redux/features/taskSlice";
 
 interface TodoBoardTableProps {
     data: ITask[];
-    setUpdateOpen: (open: boolean) => void;
-    setToDo: (task: ITask) => void;
     selectedTasks: string[];
     handleBulkStatusUpdate: (status: string) => void;
     handleUpdateTask: (task: ITask) => void;
@@ -22,12 +15,8 @@ interface TodoBoardTableProps {
 
 export function TodoBoardTable({ 
     data,
-    setUpdateOpen,
-    setToDo,
     selectedTasks,
     handleBulkStatusUpdate,
-    setAddOpen,
-
     handleUpdateTask
 }: TodoBoardTableProps& { setAddOpen: (open: boolean) => void }) {
     const dispatch = useDispatch();
@@ -124,10 +113,7 @@ export function TodoBoardTable({
                                                             Delete
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
-                                                        <DropdownMenuItem onClick={() => {
-                                                            setUpdateOpen(true);
-                                                            setToDo(task);
-                                                        }}>
+                                                        <DropdownMenuItem onClick={() => handleUpdateTask(task)}>
                                                             Update
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
@@ -177,10 +163,7 @@ export function TodoBoardTable({
                                                             Delete
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
-                                                        <DropdownMenuItem onClick={() => {
-                                                            setUpdateOpen(true);
-                                                            setToDo(task);
-                                                        }}>
+                                                        <DropdownMenuItem onClick={() => handleUpdateTask(task)}>
                                                             Update
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

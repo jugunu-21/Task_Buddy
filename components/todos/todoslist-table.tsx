@@ -47,21 +47,12 @@ import { DatePicker } from "./data-picker";
 import { IAddTask, ITaskCategory, ITaskStatus } from '@/type/todo';
 import toast from 'react-hot-toast';
 import { BsArrowReturnLeft } from "react-icons/bs";
-interface FilterType {
-    value: string;
-    label: string;
-}
-const filters: FilterType[] = [
-    { value: 'all', label: 'All Tasks' },
-    { value: 'completed', label: 'Completed Tasks' },
-    { value: 'todo', label: 'Pending Tasks' },
 
-];
 
 interface TodosListTableProps {
     data: ITask[];
     selectedTasks: string[];
-    setSelectedTask: (task: ITask) => void;
+
     handleTaskSelect: (taskId: string) => void;
     handleBulkDelete: () => void;
     handleBulkStatusUpdate: (status: string) => void;
@@ -73,7 +64,6 @@ interface TodosListTableProps {
     handleUpdateTask: (task: ITask) => void;
     toggleSection: (section: 'todo' | 'inProgress' | 'completed') => void;
     loading: boolean;
-    setUpdateOpen: (open: boolean) => void;
     setLoading:(loading: boolean) => void;
 }
 
@@ -81,7 +71,6 @@ export function TodosListTable({
     handleUpdateTask,
     data,
     selectedTasks,
-    setSelectedTask,
     handleTaskSelect,
     handleBulkDelete,
     handleBulkStatusUpdate,
@@ -89,7 +78,6 @@ export function TodosListTable({
     toggleSection,
     loading,
     setLoading,
-    setUpdateOpen,
 }: TodosListTableProps & { setAddOpen: (open: boolean) => void }) {
     const [showAddTaskForm, setShowAddTaskForm] = useState(false);
     const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -141,11 +129,11 @@ export function TodosListTable({
 
     useEffect(() => {
         const timerId = setTimeout(() => {
-            setLoading(false); // Replace 'Welcome!' with your desired message
+            setLoading(false);
         }, 2000);
 
         return () => clearTimeout(timerId);
-    }, []);
+    }, [setLoading]);
     // const [data, setData] = useState<ITodos[]>([])
 
 

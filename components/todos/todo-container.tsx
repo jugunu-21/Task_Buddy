@@ -22,7 +22,6 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
     const [selectedTask, setSelectedTask] = useState<ITask>();
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
-    const [toDo, setToDo] = useState<ITask>();
     const [expandedSections, setExpandedSections] = useState({
         todo: true,
         inProgress: false,
@@ -122,9 +121,9 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                     <TodosListTable 
                     handleUpdateTask={handleUpdateTask}
                         data={filteredData}
-                        setUpdateOpen={setUpdateOpen}
+                        
                         selectedTasks={selectedTasks}
-                        setSelectedTask={setSelectedTask}
+                      
                         handleTaskSelect={handleTaskSelect}
                         handleBulkDelete={handleBulkDelete}
                         handleBulkStatusUpdate={handleBulkStatusUpdate}
@@ -138,8 +137,8 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                     <TodoBoardTable 
                     handleUpdateTask={handleUpdateTask}
                         data={filteredData}
-                        setUpdateOpen={setUpdateOpen}
-                        setToDo={setToDo}
+                      
+                      
                         selectedTasks={selectedTasks}
                         handleBulkStatusUpdate={handleBulkStatusUpdate}
                         setAddOpen={setAddOpen}
@@ -166,7 +165,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                             {selectedTask && (
                                 <Updatecard
                                     todos={selectedTask}
-                                    sheetOpen={updateOpen}
+                                   
                                     setSheetOpen={setUpdateOpen}
                                 />
                             )}

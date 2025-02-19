@@ -21,7 +21,7 @@ export function DatePicker({ dueDate, setDueDate }: { dueDate: Date | undefined;
         if (dueDate && dueDate !== date) {
             setDate(dueDate);
         }
-    }, [dueDate]);
+    }, [dueDate, date]);
 
     React.useEffect(() => {
         if (date) {

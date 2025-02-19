@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getAllTasks, createTask, updateTaskdb, deleteTask, updateStatusdb,} from '../../db/tasks';
 import type { Task as PrismaTask } from '@prisma/client';
 export interface ITask extends Omit<PrismaTask, 'dueDate'> {
@@ -102,7 +102,7 @@ const taskSlice = createSlice({
         userId:"USERID",
         dueDate: new Date(action.payload.dueDate)
       };
-      addTaskAsync(taskData).then(newTask => {
+      addTaskAsync(taskData).then(() => {
         fetchTasksAsync("USERID").then(tasks => {
           const tasksWithSerializedDates = tasks.map(task => ({
             ...task,

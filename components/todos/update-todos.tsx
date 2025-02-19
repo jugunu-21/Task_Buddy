@@ -22,7 +22,7 @@ import { Label } from "@/components/ui/label";
 import { DatePicker } from "./data-picker";
 import toast from "react-hot-toast";
 
-export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: ITask, sheetOpen?: boolean, setSheetOpen: ((n: boolean) => void) }) {
+export function Updatecard({ todos, setSheetOpen }: { todos: ITask, setSheetOpen: ((n: boolean) => void) }) {
     const dispatch = useDispatch();
     const [dueDate, setDueDate] = React.useState<Date>(new Date(todos.dueDate));
     const [title, setTitle] = React.useState<string>(todos.title);

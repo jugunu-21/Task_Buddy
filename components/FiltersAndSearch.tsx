@@ -1,8 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
-
 interface FiltersAndSearchProps {
   VALUESEARCH: string;
   ONCHANGESEARCH: (event: React.ChangeEvent<HTMLInputElement>) => void;
