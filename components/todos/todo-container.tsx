@@ -71,16 +71,28 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
             [section]: !prev[section]
         }));
     };
+    const [searchValue, setSearchValue] = React.useState<string>("");
 
+    const filteredData = React.useMemo(() => {
+        return data.filter(task =>
+            task.title.toLowerCase().includes(searchValue.toLowerCase())
+        );
+    }, [data, searchValue]);
     if (!data) return null;
     return (
         <Card className="h-full">
+
+               <FiltersAndSearch 
+                                VALUESEARCH={searchValue}
+                                ONCHANGESEARCH={(event) => setSearchValue(event.target.value)}
+                                ONCLICKBUTTON={() => setAddOpen(true)}
+                            />
             <div className="w-full h-full">
                 {viewMode === 'list' ? (
                     <TodosListTable 
                     setAddOpen={setAddOpen}
                     setLoading={setLoading}
-                        data={data}
+                        data={filteredData}
                         selectedTasks={selectedTasks}
                         handleTaskSelect={handleTaskSelect}
                         handleBulkDelete={handleBulkDelete}
@@ -93,7 +105,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                     />
                 ) : (
                     <TodoBoardTable 
-                        data={data}
+                        data={filteredData}
                         setUpdateOpen={setUpdateOpen}
                         setToDo={setToDo}
                         selectedTasks={selectedTasks}

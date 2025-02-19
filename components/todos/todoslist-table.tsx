@@ -292,12 +292,12 @@ export function TodosListTable({
         <Card className="h-full">
             <CardContent>
                 <div className="w-full h-full">
-                    <FiltersAndSearch VALUESEARCH={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+                    {/* <FiltersAndSearch VALUESEARCH={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
                             ONCHANGESEARCH={(event) =>
                                 table.getColumn("title")?.setFilterValue(event.target.value)
                             } 
                             ONCLICKBUTTON={() => setAddOpen(true)}
-                            />
+                            /> */}
                     
                     <div className="">
                         <Table>

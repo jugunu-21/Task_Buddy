@@ -29,21 +29,13 @@ export function TodoBoardTable({
     setAddOpen
 }: TodoBoardTableProps& { setAddOpen: (open: boolean) => void }) {
     const dispatch = useDispatch();
-    const [searchValue, setSearchValue] = React.useState<string>("");
 
-    const filteredData = React.useMemo(() => {
-        return data.filter(task =>
-            task.title.toLowerCase().includes(searchValue.toLowerCase())
-        );
-    }, [data, searchValue]);
+
+
     return(
       
               <>  
-                            <FiltersAndSearch 
-                                VALUESEARCH={searchValue}
-                                ONCHANGESEARCH={(event) => setSearchValue(event.target.value)}
-                                ONCLICKBUTTON={() => setAddOpen(true)}
-                            />
+                            
                 <div className="mt-6 grid grid-cols-3 gap-6">
                     {/* Todo Section */}
                     <div className=" rounded-lg p-4 bg-muted/90">
@@ -54,7 +46,7 @@ export function TodoBoardTable({
                             </div>
                         </div>
                         <div className="space-y-3">
-                            {filteredData
+                            {data
                                 .filter(task => task.status === "TO-DO")
                                 .map((task) => (
                                     <Card key={task.id} className="bg-white">
@@ -110,7 +102,7 @@ export function TodoBoardTable({
                             </div>
                         </div>
                         <div className="space-y-3">
-                            {filteredData
+                            {data
                                 .filter(task => task.status === "IN-PROGRESS")
                                 .map((task) => (
                                     <Card key={task.id} className="bg-white">
@@ -163,7 +155,7 @@ export function TodoBoardTable({
                             </div>
                         </div>
                         <div className="space-y-3">
-                            {filteredData
+                            {data
                                 .filter(task => task.status === "COMPLETED")
                                 .map((task) => (
                                     <Card key={task.id} className="bg-white">
