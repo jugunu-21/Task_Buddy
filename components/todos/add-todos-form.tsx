@@ -136,11 +136,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
                                             <span>personal</span>
                                         </div>
                                     </SelectItem>
-                                    <SelectItem value="home">
-                                        <div className="flex gap-1 justify-center items-center">
-                                            <FaHome /> <span>home</span>
-                                        </div>
-                                    </SelectItem>
+                                   
                                 </SelectContent>
                             </Select>
                         </div>

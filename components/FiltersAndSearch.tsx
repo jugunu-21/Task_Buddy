@@ -57,8 +57,6 @@ export default function FiltersAndSearch({ VALUESEARCH, ONCHANGESEARCH, ONCLICKB
                 <option value="all"> Categories</option>
                 <option value="work">Work</option>
                 <option value="personal">Personal</option>
-                <option value="shopping">Shopping</option>
-                <option value="others">Others</option>
               </select>
             </div>
             <div className="w-40">

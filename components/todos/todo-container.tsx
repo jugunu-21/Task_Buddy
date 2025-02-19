@@ -98,6 +98,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                         setToDo={setToDo}
                         selectedTasks={selectedTasks}
                         handleBulkStatusUpdate={handleBulkStatusUpdate}
+                        setAddOpen={setAddOpen}
                     />
                 )}
 
