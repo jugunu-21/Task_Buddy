@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { CardWithForm } from "./add-todos-form";
 import { Updatecard } from "./update-todos";
 import { ITask, removeBulkTasks, updateTask } from "@/lib/redux/features/taskSlice";
@@ -8,7 +8,6 @@ import FiltersAndSearch from "../FiltersAndSearch";
 import { Card } from "../ui/card";
 import { TodosListTable } from "./todoslist-table";
 import { TodoBoardTable } from "./todoboard-table";
-import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
 
@@ -29,8 +28,6 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
         inProgress: false,
         completed: false
     });
-
-
 
     const dispatch = useDispatch();
 
@@ -166,15 +163,13 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle>Update Task</AlertDialogTitle>
-                            {/* <AlertDialogDescription> */}
-                                {selectedTask && (
-                                    <Updatecard
-                                        todos={selectedTask}
-                                        sheetOpen={updateOpen}
-                                        setSheetOpen={setUpdateOpen}
-                                    />
-                                )}
-                            {/* </AlertDialogDescription> */}
+                            {selectedTask && (
+                                <Updatecard
+                                    todos={selectedTask}
+                                    sheetOpen={updateOpen}
+                                    setSheetOpen={setUpdateOpen}
+                                />
+                            )}
                         </AlertDialogHeader>
                         <AlertDialogFooter />
                     </AlertDialogContent>

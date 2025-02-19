@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import {  ITask, updateTask } from "@/lib/redux/features/taskSlice";
+import { ITask, updateTask } from "@/lib/redux/features/taskSlice";
 import { Button } from "@/components/ui/button";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import {
@@ -20,10 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "./data-picker";
-
-import { Task } from "@prisma/client";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+
 export function Updatecard({ todos, sheetOpen, setSheetOpen }: { todos: ITask, sheetOpen?: boolean, setSheetOpen: ((n: boolean) => void) }) {
     const dispatch = useDispatch();
     const [dueDate, setDueDate] = React.useState<Date>(new Date(todos.dueDate));

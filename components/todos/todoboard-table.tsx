@@ -9,8 +9,7 @@ import { Checkbox } from "../ui/checkbox";
 import {MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useState, useEffect } from "react";
-import { ITask, removeTask, updateTask, removeBulkTasks } from "@/lib/redux/features/taskSlice";
-import FiltersAndSearch from "../FiltersAndSearch";
+import { ITask, removeTask, updateTask } from "@/lib/redux/features/taskSlice";
 
 interface TodoBoardTableProps {
     data: ITask[];

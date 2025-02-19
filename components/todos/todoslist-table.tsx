@@ -1,7 +1,5 @@
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import * as React from "react"
-import { RootState } from "../../lib/redux/store"
-import { useEffect, } from 'react'
+import * as React from "react";
+import { useEffect } from 'react';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -13,33 +11,25 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Loader2 } from "lucide-react"
-import { Button } from "../../components/ui/button"
-import { Checkbox } from "../../components/ui/checkbox"
+} from "@tanstack/react-table";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Loader2 } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { Checkbox } from "../../components/ui/checkbox";
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"
+} from "../../components/ui/dropdown-menu";
 import {
     Card,
     CardContent,
 } from "../../components/ui/card";
-import { useDispatch, useSelector, } from "react-redux"
-import type { Task } from '@prisma/client'
-import { addTask,
-    updateTask,
-    removeTask,
-    clearFilters,
-    UpdateIntialTasks,
-    ITask,
-    removeBulkTasks} from "@/lib/redux/features/taskSlice";
-import { Input } from "../../components/ui/input"
+import { useDispatch } from "react-redux";
+import { addTask, removeTask, UpdateIntialTasks, ITask } from "@/lib/redux/features/taskSlice";
+import { Input } from "../../components/ui/input";
 import {
     Table,
     TableBody,
@@ -47,28 +37,16 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../../components/ui/table"
-import { useState } from "react"
-import {
-    AlertDialog,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "../../components/ui/alert-dialog"
-import { Updatecard } from "./update-todos"
-import { Badge } from "../ui/badge"
-import { createDateFromISO } from "../../helpers/date-formator"
-import { getBadgeVariant } from "../../helpers/get-badges-varient"
+} from "../../components/ui/table";
+import { useState } from "react";
+import { Badge } from "../ui/badge";
+import { createDateFromISO } from "../../helpers/date-formator";
 import { getAllTasks } from '@/lib/db/tasks';
-import { CardWithForm } from './add-todos-form';
-import FiltersAndSearch from '../FiltersAndSearch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { DatePicker } from "./data-picker";
 import { IAddTask, ITaskCategory, ITaskStatus } from '@/type/todo';
 import toast from 'react-hot-toast';
+import { BsArrowReturnLeft } from "react-icons/bs";
 interface FilterType {
     value: string;
     label: string;
@@ -98,7 +76,6 @@ interface TodosListTableProps {
     setUpdateOpen: (open: boolean) => void;
     setLoading:(loading: boolean) => void;
 }
-import { BsArrowReturnLeft } from "react-icons/bs";
 
 export function TodosListTable({
     handleUpdateTask,
@@ -379,9 +356,10 @@ export function TodosListTable({
                                                 <Button 
                                                     variant="ghost" 
                                                     onClick={() => setShowAddTaskForm(true)}
-                                                    className=" text-xs "
+                                                    className="text-xs"
+                                                    suppressHydrationWarning
                                                 >
-                                                    + ADD TASK
+                                                    Add Task
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
