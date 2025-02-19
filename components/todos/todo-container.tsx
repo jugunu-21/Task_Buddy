@@ -26,8 +26,8 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
     const [toDo, setToDo] = useState<ITask>();
     const [expandedSections, setExpandedSections] = useState({
         todo: true,
-        inProgress: true,
-        completed: true
+        inProgress: false,
+        completed: false
     });
 
 
