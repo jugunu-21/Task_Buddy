@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function SignIn() {
+ 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -15,7 +16,7 @@ export default function SignIn() {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
-      
+      console.log("result",result)
       // Store the token in a cookie
       document.cookie = `firebase-token=${idToken}; path=/`;
       
@@ -26,7 +27,7 @@ export default function SignIn() {
       setIsLoading(false);
     }
   };
-
+  console.log("result",handleGoogleSignIn)
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="p-8 bg-gray-50 rounded-lg shadow-lg w-full max-w-md">

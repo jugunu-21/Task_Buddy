@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const idToken = request.cookies.get('firebase-token');
+  console.log("idToken: ", idToken)
   const isAuthPage = request.nextUrl.pathname.startsWith('/signin');
 
   if (isAuthPage) {
