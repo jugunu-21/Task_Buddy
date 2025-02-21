@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import { addTask } from "@/lib/redux/features/taskSlice";
+import { addTaskAsync } from "@/lib/redux/features/taskSlice";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -71,7 +71,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen,dispatch }: { dispatch:an
             setSheetOpen(!sheetOpen);
         }
         console.log("FormData:", formData);
-        dispatch(addTask(formData));
+        dispatch(addTaskAsync(formData));
         setTitle('');
         setDescription('');
         setDueDate(new Date());

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import { ITask, updateTask } from "@/lib/redux/features/taskSlice";
+import { ITask, updateTaskAsync } from "@/lib/redux/features/taskSlice";
 import { Button } from "@/components/ui/button";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import {
@@ -21,9 +21,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "./data-picker";
 import toast from "react-hot-toast";
+import { AppDispatch } from "@/lib/redux/store";
 
 export function Updatecard({ todos, setSheetOpen }: { todos: ITask, setSheetOpen: ((n: boolean) => void) }) {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const [dueDate, setDueDate] = React.useState<Date>(new Date(todos.dueDate));
     const [title, setTitle] = React.useState<string>(todos.title);
     const [description, setDescription] = React.useState<string>(todos.description);
@@ -44,13 +45,9 @@ export function Updatecard({ todos, setSheetOpen }: { todos: ITask, setSheetOpen
             return;
         }
      
-        dispatch(updateTask({
-            dueDate: dueDate.toISOString(),
-            title,
-            description,
+        dispatch(updateTaskAsync({
+            data: { id:todos.id,dueDate,  description, status, category, title},
             id: todos.id,
-            status,
-            category
         }));
         setSheetOpen(false)
         setTitle('');

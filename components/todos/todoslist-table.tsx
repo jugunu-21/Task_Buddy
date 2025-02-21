@@ -26,7 +26,7 @@ import {
     Card,
     CardContent,
 } from "../../components/ui/card";
-import { addTask, removeTask, ITask } from "@/lib/redux/features/taskSlice";
+import { addTaskAsync, deleteTaskAsync, ITask } from "@/lib/redux/features/taskSlice";
 import { Input } from "../../components/ui/input";
 import {
     Table,
@@ -41,7 +41,7 @@ import { Badge } from "../ui/badge";
 import { createDateFromISO } from "../../helpers/date-formator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { DatePicker } from "./data-picker";
-import { IAddTask, ITaskCategory, ITaskStatus } from '@/type/todo';
+import { ITaskCategory, ITaskStatus } from '@/type/todo';
 import toast from 'react-hot-toast';
 import { BsArrowReturnLeft } from "react-icons/bs";
 
@@ -78,19 +78,19 @@ export function TodosListTable({
     setLoading,
     dispatch
 }: TodosListTableProps & { setAddOpen: (open: boolean) => void }) {
-    const [showAddTaskForm, setShowAddTaskForm] = useState(false);
+    const [showaddTaskAsyncForm, setShowaddTaskAsyncForm] = useState(false);
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newTaskStatus, setNewTaskStatus] = useState<string>();
     const [newTaskDueDate, setNewTaskDueDate] = useState<Date>();
     const [newTaskCategory, setNewTaskCategory] = useState<string>();
   
-    const handleAddTask = () => {
+    const handleaddTaskAsync = () => {
         if (!newTaskTitle || !newTaskStatus || !newTaskDueDate || !newTaskCategory) {
             toast.error("All fields are required");
             return;
         }
 
-        const formData: IAddTask = {
+        const formData = {
             title: newTaskTitle,
             status: newTaskStatus as ITaskStatus,
             dueDate: newTaskDueDate.toISOString(),
@@ -98,12 +98,12 @@ export function TodosListTable({
             description: ""
         };
 
-        dispatch(addTask(formData));
+        dispatch(addTaskAsync(formData));
         setNewTaskTitle("");
         setNewTaskStatus(undefined);
         setNewTaskDueDate(undefined);
         setNewTaskCategory(undefined);
-        setShowAddTaskForm(false);
+        setShowaddTaskAsyncForm(false);
     };
 
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -223,7 +223,7 @@ export function TodosListTable({
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() => dispatch(removeTask(payment.id))}
+onClick={() => dispatch(deleteTaskAsync (payment.id))}
                             >
                                 Delete
                             </DropdownMenuItem>
@@ -315,7 +315,7 @@ export function TodosListTable({
                                             <TableCell colSpan={5}>
                                                 <Button 
                                                     variant="ghost" 
-                                                    onClick={() => setShowAddTaskForm(true)}
+                                                    onClick={() => setShowaddTaskAsyncForm(true)}
                                                     className="text-xs"
                                                     suppressHydrationWarning
                                                 >
@@ -323,7 +323,7 @@ export function TodosListTable({
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
-                                        {showAddTaskForm && (
+                                        {showaddTaskAsyncForm && (
                                             <TableRow className="bg-muted/90">
                                                 <TableCell colSpan={5} className='w-full'>
                                                     <div className="flex items-center  justify-between   px-20   ">
@@ -335,7 +335,7 @@ export function TodosListTable({
                                                             onChange={(e) => setNewTaskTitle(e.target.value)}
                                                         />
                                                             <div className='flex-row mt-2'>
-                                                            <Button variant="default" size="sm" onClick={handleAddTask} className='bg-purple-600 text-white rounded-3xl  hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors duration-200'>ADD <BsArrowReturnLeft /></Button>
+                                                            <Button variant="default" size="sm" onClick={handleaddTaskAsync} className='bg-purple-600 text-white rounded-3xl  hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors duration-200'>ADD <BsArrowReturnLeft /></Button>
 
                                                             
                                                             <Button variant="ghost" size="sm" onClick={() => {
@@ -343,7 +343,7 @@ export function TodosListTable({
                                                                 setNewTaskStatus(undefined);
                                                                 setNewTaskDueDate(undefined);
                                                                 setNewTaskCategory(undefined);
-                                                                setShowAddTaskForm(false);
+                                                                setShowaddTaskAsyncForm(false);
                                                             }}>CANCEL</Button>
                                                             </div>
                                                         </div>

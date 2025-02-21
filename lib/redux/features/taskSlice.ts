@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getAllTasks, createTask, updateTaskdb, deleteTask, updateStatusdb,} from '../../db/tasks';
 import type { Task as PrismaTask } from '@prisma/client';
+import { IAddTask } from '@/type/todo';
 export interface ITask extends Omit<PrismaTask, 'dueDate'> {
   // Task fields from schema:
   // - id: string
@@ -23,10 +24,16 @@ interface ITaskState {
   };
 }
 // Load tasks from localStorage or use empty array
-export const fetchTasksAsync = async(userId:string)=>{
-  const tasks = await getAllTasks(userId);
-  return tasks;
-} 
+export const fetchTasksAsync = createAsyncThunk(
+  'tasks/fetchTasks',
+  async (userId: string) => {
+    const tasks = await getAllTasks(userId);
+    return tasks.map(task => ({
+      ...task,
+      dueDate: task.dueDate.toISOString()
+    }));
+  }
+);
 
 const initialState: ITaskState = {
   userIdFir:"",
@@ -42,42 +49,61 @@ const initialState: ITaskState = {
 
 
   
-export const addTaskAsync = async (taskData: Omit<PrismaTask, 'id'>) => {
-  try {
-    const task = await createTask(taskData);
-    return task;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to add task');
+export const addTaskAsync = createAsyncThunk(
+  'tasks/addTask',
+  async (taskData: Omit<IAddTask, 'id' | 'userId'>, { getState }) => {
+    const state = getState() as { tasks: ITaskState };
+    const taskWithUserId = { 
+      ...taskData, 
+      userId: state.tasks.userIdFir,
+      dueDate: new Date(taskData.dueDate)
+    };
+    const task = await createTask(taskWithUserId);
+    return {
+      ...task,
+      dueDate: task.dueDate.toISOString()
+    };
   }
-};
+);
 
-export const updateTaskAsync = async (id: string, data: Partial<PrismaTask>) => {
-  try {
+export const updateTaskAsync = createAsyncThunk(
+  'tasks/updateTask',
+  async ({ id, data }: { id: string; data: Partial<PrismaTask> }) => {
     const task = await updateTaskdb(id, data);
-    return task;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to update task');
+    return {
+      ...task,
+      dueDate: task.dueDate.toISOString()
+    };
   }
-};
+);
 
-export const updateBulkTasksAsync = async (ids: string[], status: string) => {
-  try {
+export const updateBulkTasksAsync = createAsyncThunk(
+  'tasks/updateBulkTasks',
+  async ({ ids, status }: { ids: string[]; status: string }) => {
     const updatePromises = ids.map(id => updateStatusdb(id, status));
     const tasks = await Promise.all(updatePromises);
-    return tasks;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to update tasks');
+    return tasks.map(task => ({
+      ...task,
+      dueDate: task.dueDate.toISOString()
+    }));
   }
-};
+);
 
-export const deleteTaskAsync = async (id: string) => {
-  try {
+export const deleteTaskAsync = createAsyncThunk(
+  'tasks/deleteTask',
+  async (id: string) => {
     await deleteTask(id);
     return id;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to delete task');
   }
-};
+);
+
+export const deleteBulkTasksAsync = createAsyncThunk(
+  'tasks/deleteBulkTasks',
+  async (ids: string[]) => {
+    await Promise.all(ids.map(id => deleteTask(id)));
+    return ids;
+  }
+);
 
 // export const toggleTaskCompleteAsync = async (id: string, completed: boolean) => {
 //   try {
@@ -94,83 +120,117 @@ const taskSlice = createSlice({
     setUserId: (state, action: PayloadAction<string>) => {
       state.userIdFir = action.payload;
     },
-    UpdateIntialTasks: (state, action: PayloadAction<ITask[]>) => {
-      state.loading = true;
-      state.tasks = action.payload;
-      state.filteredTasks = action.payload;
-      state.loading = false;
-    },
-    addTask: (state: ITaskState, action: PayloadAction<Omit<ITask, 'id' |'userId'>>) => {
-      const taskData = {
-        ...action.payload,
-        userId:state.userIdFir,
-        dueDate: new Date(action.payload.dueDate)
+    clearFilters: (state) => {
+      state.filters = {
+        status: [],
+        category: []
       };
-      addTaskAsync(taskData).then(() => {
-        fetchTasksAsync(state.userIdFir).then(tasks => {
-          const tasksWithSerializedDates = tasks.map(task => ({
-            ...task,
-            dueDate: task.dueDate.toISOString()
-          }));
-          state.tasks = tasksWithSerializedDates;
-          state.filteredTasks = tasksWithSerializedDates;
-        });
-      });
+      state.filteredTasks = state.tasks;
     },
-    updateTask: (state, action: PayloadAction<Partial<ITask> & { id: string }>) => {
-      const index = state.tasks.findIndex(task => task.id === action.payload.id);
-      if (index !== -1) {
-        updateTaskAsync(action.payload.id, { 
-          ...action.payload, 
-          dueDate: action.payload.dueDate ? new Date(action.payload.dueDate) : new Date(state.tasks[index].dueDate)
-        }).then(() => {
-          const updatedTask = {
-            ...state.tasks[index],
-            ...action.payload,
-            dueDate: action.payload.dueDate || state.tasks[index].dueDate
-          };
-          state.tasks[index] = updatedTask;
-          state.filteredTasks = state.tasks;
+    setTasksFromDB: (state, action: PayloadAction<(Omit<PrismaTask, 'dueDate'> & { dueDate: string })[]>) => {
+      state.tasks = action.payload;
+      state.filteredTasks = state.tasks;
+      state.loading = false;
+      state.error = null;
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      // Fetch Tasks
+      .addCase(fetchTasksAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchTasksAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tasks = action.payload;
+        state.filteredTasks = action.payload;
+      })
+      .addCase(fetchTasksAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch tasks';
+      })
+      // Add Task
+      .addCase(addTaskAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addTaskAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tasks = [...state.tasks, action.payload];
+        state.filteredTasks = state.tasks;
+      })
+      .addCase(addTaskAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to add task';
+      })
+      // Update Task
+      .addCase(updateTaskAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateTaskAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.tasks.findIndex(task => task.id === action.payload.id);
+        if (index !== -1) {
+          state.tasks[index] = action.payload;
+        }
+        state.filteredTasks = state.tasks;
+      })
+      .addCase(updateTaskAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to update task';
+      })
+      // Update Bulk Tasks
+      .addCase(updateBulkTasksAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateBulkTasksAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        action.payload.forEach(updatedTask => {
+          const index = state.tasks.findIndex(task => task.id === updatedTask.id);
+          if (index !== -1) {
+            state.tasks[index] = updatedTask;
+          }
         });
-      }
-    },
-    removeTask: (state, action: PayloadAction<string>) => {
-      deleteTaskAsync(action.payload).then(() => {
+        state.filteredTasks = state.tasks;
+      })
+      .addCase(updateBulkTasksAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to update tasks';
+      })
+      // Delete Task
+      .addCase(deleteTaskAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteTaskAsync.fulfilled, (state, action) => {
+        state.loading = false;
         state.tasks = state.tasks.filter(task => task.id !== action.payload);
         state.filteredTasks = state.tasks;
-      }).catch(error => {
-        state.error = error.message;
+      })
+      .addCase(deleteTaskAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to delete task';
+      })
+      // Delete Bulk Tasks
+      .addCase(deleteBulkTasksAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteBulkTasksAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tasks = state.tasks.filter(task => !action.payload.includes(task.id));
+        state.filteredTasks = state.tasks;
+
+        // state.tasks = state.tasks.filter(task => !action.payload.includes(task.id));
+        // state.filteredTasks = state.tasks;
+      })
+      .addCase(deleteBulkTasksAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to delete tasks';
       });
-    },
-    removeBulkTasks: (state, action: PayloadAction<string[]>) => {
-      Promise.all(action.payload.map(id => deleteTaskAsync(id)))
-        .then(() => {
-          state.tasks = state.tasks.filter(task => !action.payload.includes(task.id));
-          state.filteredTasks = state.tasks;
-        })
-        .catch(error => {
-          state.error = error.message;
-        });
-    },
-    updateBulkTasks: (state, action: PayloadAction<{ ids: string[], status: string }>) => {
-      updateBulkTasksAsync(action.payload.ids, action.payload.status)
-        .then((updatedTasks) => {
-          updatedTasks.forEach(updatedTask => {
-            const index = state.tasks.findIndex(task => task.id === updatedTask.id);
-            if (index !== -1) {
-              state.tasks[index] = { 
-                ...state.tasks[index], 
-                ...updatedTask,
-                dueDate: updatedTask.dueDate.toISOString()
-              };
-            }
-          });
-          state.filteredTasks = state.tasks;
-        })
-        .catch(error => {
-          state.error = error.message;
-        });
-    },
     // toggleTaskComplete: (state, action: PayloadAction<string>) => {
     //   const task = state.tasks.find(task => task.id === action.payload);
     //   if (task) {
@@ -192,13 +252,7 @@ const taskSlice = createSlice({
     //     return statusMatch && categoryMatch && priorityMatch;
     //   });
     // },
-    clearFilters: (state) => {
-      state.filters = {
-        status: [],
-        category: []
-      };
-      state.filteredTasks = state.tasks;
-    },
+
   //   filterTask: (state, action: PayloadAction<string[]>) => {
   //     const selectedFilters = action.payload;
   //     if (selectedFilters.length === 0 || selectedFilters.includes('all')) {
@@ -212,14 +266,5 @@ const taskSlice = createSlice({
   // },
 }
 });
-export const {
-  UpdateIntialTasks,
-  addTask,
-  updateTask,
-  removeTask,
-  removeBulkTasks,
-  updateBulkTasks,
-  clearFilters,
-  setUserId
-} = taskSlice.actions;
+export const { setUserId ,setTasksFromDB} = taskSlice.actions;
 export default taskSlice.reducer;

@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { CardWithForm } from "./add-todos-form";
 import { Updatecard } from "./update-todos";
-import { ITask, removeBulkTasks, UpdateIntialTasks, updateTask } from "@/lib/redux/features/taskSlice";
+import { ITask, deleteBulkTasksAsync, updateTaskAsync,setTasksFromDB } from "@/lib/redux/features/taskSlice";
 import FiltersAndSearch from "../FiltersAndSearch";
 import { Card } from "../ui/card";
 import { TodosListTable } from "./todoslist-table";
 import { TodoBoardTable } from "./todoboard-table";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/redux/store";
+import { RootState, AppDispatch } from "@/lib/redux/store";
 import { getAllTasks } from "@/lib/db/tasks";
 
 interface TodoContainerProps {
@@ -30,7 +30,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
         completed: false
     });
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleTaskSelect = (taskId: string) => {
         setSelectedTasks(prev => {
@@ -43,7 +43,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
 
     const handleBulkDelete = () => {
         if (selectedTasks.length > 0) {
-            dispatch(removeBulkTasks(selectedTasks));
+            dispatch(deleteBulkTasksAsync(selectedTasks));
             setSelectedTasks([]);
         }
     };
@@ -51,9 +51,11 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
     const handleBulkStatusUpdate = (newStatus: string) => {
         if (selectedTasks.length > 0) {
             selectedTasks.forEach(taskId => {
-                dispatch(updateTask({
+                dispatch(updateTaskAsync({
                     id: taskId,
-                    status: newStatus
+                    data: {
+                        status: newStatus
+                    }
                 }));
             });
             setSelectedTasks([]);
@@ -116,7 +118,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                 dueDate: task.dueDate.toISOString()
             }));
 
-            dispatch(UpdateIntialTasks(tasksWithSerializedDates));
+            dispatch(setTasksFromDB(tasksWithSerializedDates));
         }).catch((error) => {
             console.error("Error fetching tasks:", error);
         });
