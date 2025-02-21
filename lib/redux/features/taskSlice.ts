@@ -34,6 +34,21 @@ export const fetchTasksAsync = createAsyncThunk(
     }));
   }
 );
+export const fetchTasksFromDBAsync = createAsyncThunk(
+  'tasks/fetchTasksFromDB',
+  async (userId: string, { dispatch }) => {
+    try {
+      const tasks = await getAllTasks(userId);
+      const formattedTasks = tasks.map(task => ({
+        ...task,
+        dueDate: task.dueDate.toISOString()
+      }));
+      return formattedTasks;
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : 'Failed to fetch tasks from DB');
+    }
+  }
+);
 
 const initialState: ITaskState = {
   userIdFir:"",
@@ -142,12 +157,19 @@ const taskSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchTasksAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.tasks = action.payload;
-        state.filteredTasks = action.payload;
+        const newState = {
+          ...state,
+          loading: false,
+          error: null,
+          tasks: action.payload,
+          filteredTasks: action.payload
+        };
+        Object.assign(state, newState);
       })
       .addCase(fetchTasksAsync.rejected, (state, action) => {
         state.loading = false;
+        state.tasks = [];
+        state.filteredTasks = [];
         state.error = action.error.message || 'Failed to fetch tasks';
       })
       // Add Task
@@ -157,8 +179,9 @@ const taskSlice = createSlice({
       })
       .addCase(addTaskAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.tasks = [...state.tasks, action.payload];
-        state.filteredTasks = state.tasks;
+        state.filteredTasks = [...state.filteredTasks, action.payload];
       })
       .addCase(addTaskAsync.rejected, (state, action) => {
         state.loading = false;
@@ -171,11 +194,15 @@ const taskSlice = createSlice({
       })
       .addCase(updateTaskAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         const index = state.tasks.findIndex(task => task.id === action.payload.id);
         if (index !== -1) {
           state.tasks[index] = action.payload;
+          const filteredIndex = state.filteredTasks.findIndex(task => task.id === action.payload.id);
+          if (filteredIndex !== -1) {
+            state.filteredTasks[filteredIndex] = action.payload;
+          }
         }
-        state.filteredTasks = state.tasks;
       })
       .addCase(updateTaskAsync.rejected, (state, action) => {
         state.loading = false;
@@ -188,13 +215,17 @@ const taskSlice = createSlice({
       })
       .addCase(updateBulkTasksAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         action.payload.forEach(updatedTask => {
-          const index = state.tasks.findIndex(task => task.id === updatedTask.id);
-          if (index !== -1) {
-            state.tasks[index] = updatedTask;
+          const taskIndex = state.tasks.findIndex(task => task.id === updatedTask.id);
+          if (taskIndex !== -1) {
+            state.tasks[taskIndex] = updatedTask;
+          }
+          const filteredIndex = state.filteredTasks.findIndex(task => task.id === updatedTask.id);
+          if (filteredIndex !== -1) {
+            state.filteredTasks[filteredIndex] = updatedTask;
           }
         });
-        state.filteredTasks = state.tasks;
       })
       .addCase(updateBulkTasksAsync.rejected, (state, action) => {
         state.loading = false;
@@ -207,8 +238,9 @@ const taskSlice = createSlice({
       })
       .addCase(deleteTaskAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.tasks = state.tasks.filter(task => task.id !== action.payload);
-        state.filteredTasks = state.tasks;
+        state.filteredTasks = state.filteredTasks.filter(task => task.id !== action.payload);
       })
       .addCase(deleteTaskAsync.rejected, (state, action) => {
         state.loading = false;
@@ -221,16 +253,15 @@ const taskSlice = createSlice({
       })
       .addCase(deleteBulkTasksAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.tasks = state.tasks.filter(task => !action.payload.includes(task.id));
-        state.filteredTasks = state.tasks;
-
-        // state.tasks = state.tasks.filter(task => !action.payload.includes(task.id));
-        // state.filteredTasks = state.tasks;
+        state.filteredTasks = state.filteredTasks.filter(task => !action.payload.includes(task.id));
       })
       .addCase(deleteBulkTasksAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to delete tasks';
       });
+  }
     // toggleTaskComplete: (state, action: PayloadAction<string>) => {
     //   const task = state.tasks.find(task => task.id === action.payload);
     //   if (task) {
@@ -264,7 +295,7 @@ const taskSlice = createSlice({
   //       return selectedFilters.includes(taskStatus);
   //     });
   // },
-}
+
 });
 export const { setUserId ,setTasksFromDB} = taskSlice.actions;
 export default taskSlice.reducer;

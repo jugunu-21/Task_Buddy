@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { CardWithForm } from "./add-todos-form";
 import { Updatecard } from "./update-todos";
-import { ITask, deleteBulkTasksAsync, updateTaskAsync,setTasksFromDB } from "@/lib/redux/features/taskSlice";
+import { ITask, deleteBulkTasksAsync, updateTaskAsync,setTasksFromDB, fetchTasksAsync } from "@/lib/redux/features/taskSlice";
 import FiltersAndSearch from "../FiltersAndSearch";
 import { Card } from "../ui/card";
 import { TodosListTable } from "./todoslist-table";
@@ -18,20 +18,18 @@ interface TodoContainerProps {
 
 export function TodoContainer({ viewMode }: TodoContainerProps) {
     const data = useSelector((state: RootState) => state.tasks.tasks)
+    const loading = useSelector((state: RootState) => state.tasks.loading)
     const userId = useSelector((state: RootState) => state.tasks.userIdFir)
     const [addOpen, setAddOpen] = useState(false);
     const [updateOpen, setUpdateOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<ITask>();
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-    const [loading, setLoading] = useState(true);
     const [expandedSections, setExpandedSections] = useState({
         todo: true,
         inProgress: false,
         completed: false
     });
-
     const dispatch = useDispatch<AppDispatch>();
-
     const handleTaskSelect = (taskId: string) => {
         setSelectedTasks(prev => {
             if (prev.includes(taskId)) {
@@ -111,26 +109,10 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
     if (!data) return null;
    useEffect(() => {
     console.log("userid",userId)
-        getAllTasks(userId).then((tasks) => {
-            console.log("tasks ssss",tasks)
-            const tasksWithSerializedDates = tasks.map(task => ({
-                ...task,
-                dueDate: task.dueDate.toISOString()
-            }));
-
-            dispatch(setTasksFromDB(tasksWithSerializedDates));
-        }).catch((error) => {
-            console.error("Error fetching tasks:", error);
-        });
+    dispatch(fetchTasksAsync(userId));
     }, [dispatch, userId]);
 
-    useEffect(() => {
-        const timerId = setTimeout(() => {
-            setLoading(false);
-        }, 2000);
 
-        return () => clearTimeout(timerId);
-    }, [setLoading]);
     return (
         <Card className="h-full">
             <FiltersAndSearch 
@@ -157,7 +139,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                         expandedSections={expandedSections}
                         toggleSection={toggleSection}
                         loading={loading}
-                        setLoading={setLoading}
+
                         setAddOpen={setAddOpen}
                     />
                 ) : (
@@ -165,8 +147,6 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                     dispatch={dispatch}
                     handleUpdateTask={handleUpdateTask}
                         data={filteredData}
-                      
-                      
                         selectedTasks={selectedTasks}
                         handleBulkStatusUpdate={handleBulkStatusUpdate}
                         setAddOpen={setAddOpen}

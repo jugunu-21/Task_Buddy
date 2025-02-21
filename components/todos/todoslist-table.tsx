@@ -61,7 +61,7 @@ interface TodosListTableProps {
     handleUpdateTask: (task: ITask) => void;
     toggleSection: (section: 'todo' | 'inProgress' | 'completed') => void;
     loading: boolean;
-    setLoading:(loading: boolean) => void;
+
   dispatch:any
 }
 
@@ -75,7 +75,6 @@ export function TodosListTable({
     expandedSections,
     toggleSection,
     loading,
-    setLoading,
     dispatch
 }: TodosListTableProps & { setAddOpen: (open: boolean) => void }) {
     const [showaddTaskAsyncForm, setShowaddTaskAsyncForm] = useState(false);
@@ -478,7 +477,7 @@ onClick={() => dispatch(deleteTaskAsync (payment.id))}
                                     ))}
                                 
                                 {/* Loading and Empty States */}
-                                {!table.getRowModel().rows?.length && (
+                                {(!table.getRowModel().rows?.length || loading) &&
                                     <TableRow>
                                         <TableCell
                                             colSpan={columns.length}
@@ -493,7 +492,7 @@ onClick={() => dispatch(deleteTaskAsync (payment.id))}
                                             )}
                                         </TableCell>
                                     </TableRow>
-                                )}
+                                }
                             </TableBody>
                         </Table>
                     </div>
