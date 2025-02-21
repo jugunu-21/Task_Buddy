@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function SignIn() {
- 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -16,18 +15,23 @@ export default function SignIn() {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
-      console.log("result",result)
-      // Store the token in a cookie
-      document.cookie = `firebase-token=${idToken}; path=/`;
       
-      router.push('/');
+      // Store the token in a secure cookie with expiration
+      const expirationDate = new Date();
+      expirationDate.setHours(expirationDate.getHours() + 24); // 24 hour expiration
+      document.cookie = `firebase-token=${idToken}; path=/; expires=${expirationDate.toUTCString()}; secure; samesite=strict`;
+      
+      // Use replace instead of push to prevent history stack buildup
+      router.replace('/');
     } catch (error) {
       console.error('Authentication error:', error);
+      // Clear any existing token on error
+      document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     } finally {
       setIsLoading(false);
     }
   };
-  console.log("result",handleGoogleSignIn)
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="p-8 bg-gray-50 rounded-lg shadow-lg w-full max-w-md">
