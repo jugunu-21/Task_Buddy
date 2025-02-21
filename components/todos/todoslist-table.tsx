@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useEffect } from 'react';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -27,8 +26,7 @@ import {
     Card,
     CardContent,
 } from "../../components/ui/card";
-import { useDispatch } from "react-redux";
-import { addTask, removeTask, UpdateIntialTasks, ITask } from "@/lib/redux/features/taskSlice";
+import { addTask, removeTask, ITask } from "@/lib/redux/features/taskSlice";
 import { Input } from "../../components/ui/input";
 import {
     Table,
@@ -41,7 +39,6 @@ import {
 import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { createDateFromISO } from "../../helpers/date-formator";
-import { getAllTasks } from '@/lib/db/tasks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { DatePicker } from "./data-picker";
 import { IAddTask, ITaskCategory, ITaskStatus } from '@/type/todo';
@@ -65,6 +62,7 @@ interface TodosListTableProps {
     toggleSection: (section: 'todo' | 'inProgress' | 'completed') => void;
     loading: boolean;
     setLoading:(loading: boolean) => void;
+  dispatch:any
 }
 
 export function TodosListTable({
@@ -78,6 +76,7 @@ export function TodosListTable({
     toggleSection,
     loading,
     setLoading,
+    dispatch
 }: TodosListTableProps & { setAddOpen: (open: boolean) => void }) {
     const [showAddTaskForm, setShowAddTaskForm] = useState(false);
     const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -112,33 +111,6 @@ export function TodosListTable({
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
-
-    const dispatch = useDispatch();
-    useEffect(() => {
-        getAllTasks("USERID").then((tasks) => {
-            console.log("tasks ",tasks)
-            const tasksWithSerializedDates = tasks.map(task => ({
-                ...task,
-                dueDate: task.dueDate.toISOString()
-            }));
-            dispatch(UpdateIntialTasks(tasksWithSerializedDates));
-        }).catch((error) => {
-            console.error("Error fetching tasks:", error);
-        });
-    }, [dispatch]);
-
-    useEffect(() => {
-        const timerId = setTimeout(() => {
-            setLoading(false);
-        }, 2000);
-
-        return () => clearTimeout(timerId);
-    }, [setLoading]);
-    // const [data, setData] = useState<ITodos[]>([])
-
-
-    console.log("dataaa", data)
-
     const columns: ColumnDef<ITask>[] = [
         // {
         //     id: "select",

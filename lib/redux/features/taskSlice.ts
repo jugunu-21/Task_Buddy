@@ -12,6 +12,7 @@ export interface ITask extends Omit<PrismaTask, 'dueDate'> {
   dueDate: string;
 }
 interface ITaskState {
+  userIdFir:string;
   loading: boolean;
   error: string | null;
   tasks: ITask[];
@@ -28,6 +29,7 @@ export const fetchTasksAsync = async(userId:string)=>{
 } 
 
 const initialState: ITaskState = {
+  userIdFir:"",
   loading: false,
   error: null,
   tasks: [],
@@ -89,21 +91,23 @@ const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
+    setUserId: (state, action: PayloadAction<string>) => {
+      state.userIdFir = action.payload;
+    },
     UpdateIntialTasks: (state, action: PayloadAction<ITask[]>) => {
       state.loading = true;
-    
       state.tasks = action.payload;
       state.filteredTasks = action.payload;
       state.loading = false;
     },
-    addTask: (state: ITaskState, action: PayloadAction<Omit<ITask, 'id' | 'completed'|'userId'>>) => {
+    addTask: (state: ITaskState, action: PayloadAction<Omit<ITask, 'id' |'userId'>>) => {
       const taskData = {
         ...action.payload,
-        userId:"USERID",
+        userId:state.userIdFir,
         dueDate: new Date(action.payload.dueDate)
       };
       addTaskAsync(taskData).then(() => {
-        fetchTasksAsync("USERID").then(tasks => {
+        fetchTasksAsync(state.userIdFir).then(tasks => {
           const tasksWithSerializedDates = tasks.map(task => ({
             ...task,
             dueDate: task.dueDate.toISOString()
@@ -216,5 +220,6 @@ export const {
   removeBulkTasks,
   updateBulkTasks,
   clearFilters,
+  setUserId
 } = taskSlice.actions;
 export default taskSlice.reducer;

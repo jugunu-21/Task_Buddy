@@ -1,15 +1,16 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { CardWithForm } from "./add-todos-form";
 import { Updatecard } from "./update-todos";
-import { ITask, removeBulkTasks, updateTask } from "@/lib/redux/features/taskSlice";
+import { ITask, removeBulkTasks, UpdateIntialTasks, updateTask } from "@/lib/redux/features/taskSlice";
 import FiltersAndSearch from "../FiltersAndSearch";
 import { Card } from "../ui/card";
 import { TodosListTable } from "./todoslist-table";
 import { TodoBoardTable } from "./todoboard-table";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
+import { getAllTasks } from "@/lib/db/tasks";
 
 interface TodoContainerProps {
     viewMode: 'list' | 'board';
@@ -17,6 +18,7 @@ interface TodoContainerProps {
 
 export function TodoContainer({ viewMode }: TodoContainerProps) {
     const data = useSelector((state: RootState) => state.tasks.tasks)
+    const userId = useSelector((state: RootState) => state.tasks.userIdFir)
     const [addOpen, setAddOpen] = useState(false);
     const [updateOpen, setUpdateOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<ITask>();
@@ -105,6 +107,28 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
         setUpdateOpen(true);
     };
     if (!data) return null;
+   useEffect(() => {
+    console.log("userid",userId)
+        getAllTasks(userId).then((tasks) => {
+            console.log("tasks ssss",tasks)
+            const tasksWithSerializedDates = tasks.map(task => ({
+                ...task,
+                dueDate: task.dueDate.toISOString()
+            }));
+
+            dispatch(UpdateIntialTasks(tasksWithSerializedDates));
+        }).catch((error) => {
+            console.error("Error fetching tasks:", error);
+        });
+    }, [dispatch, userId]);
+
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setLoading(false);
+        }, 2000);
+
+        return () => clearTimeout(timerId);
+    }, [setLoading]);
     return (
         <Card className="h-full">
             <FiltersAndSearch 
@@ -119,6 +143,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
             <div className="w-full h-full">
                 {viewMode === 'list' ? (
                     <TodosListTable 
+                    dispatch={dispatch}
                     handleUpdateTask={handleUpdateTask}
                         data={filteredData}
                         
@@ -135,6 +160,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                     />
                 ) : (
                     <TodoBoardTable 
+                    dispatch={dispatch}
                     handleUpdateTask={handleUpdateTask}
                         data={filteredData}
                       
@@ -150,6 +176,7 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                         <AlertDialogHeader>
                             <AlertDialogTitle></AlertDialogTitle>
                             <CardWithForm
+                            dispatch={dispatch}
                                 sheetOpen={addOpen}
                                 setSheetOpen={setAddOpen}
                             />

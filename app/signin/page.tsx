@@ -43,6 +43,7 @@ export default function SignIn() {
               width={40}
               height={40}
               className=""
+              priority
             />
             TaskBuddy
           </div>
@@ -50,14 +51,16 @@ export default function SignIn() {
             onClick={handleGoogleSignIn}
             disabled={isLoading}
             className="flex items-center justify-center gap-3 w-full bg-white text-black px-6 py-3 rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200"
+            aria-label="Sign in with Google"
           >
             <Image
               src="/google.svg"
               alt="Google Logo"
               width={20}
               height={20}
+              priority
             />
-            {isLoading ? 'Signing in...' : 'Continue with Google'}
+            <span>{isLoading ? 'Signing in...' : 'Continue with Google'}</span>
           </button>
         </div>
       </div>

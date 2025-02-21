@@ -11,15 +11,17 @@ interface TodoBoardTableProps {
     selectedTasks: string[];
     handleBulkStatusUpdate: (status: string) => void;
     handleUpdateTask: (task: ITask) => void;
+    dispatch:any
 }
 
 export function TodoBoardTable({ 
     data,
     selectedTasks,
     handleBulkStatusUpdate,
-    handleUpdateTask
+    handleUpdateTask,
+    dispatch
 }: TodoBoardTableProps& { setAddOpen: (open: boolean) => void }) {
-    const dispatch = useDispatch();
+
 
 
 

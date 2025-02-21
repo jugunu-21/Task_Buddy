@@ -25,9 +25,8 @@ import toast from "react-hot-toast";
 import { MdOutlineSelfImprovement } from "react-icons/md";
 import { MdLocalPostOffice } from "react-icons/md";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
-export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean, setSheetOpen?: ((n: boolean) => void) }) {
+export function CardWithForm({ sheetOpen, setSheetOpen,dispatch }: { dispatch:any,sheetOpen?: boolean, setSheetOpen?: ((n: boolean) => void) }) {
 
-    const dispatch = useDispatch();
     const [dueDate, setDueDate] = React.useState<Date>();
     const [title, setTitle] = React.useState<string>("");
     const [description, setDescription] = React.useState<string>("");
@@ -77,10 +76,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen }: { sheetOpen?: boolean,
         setDescription('');
         setDueDate(new Date());
         setCategory(undefined);
-
-
     };
-
     return (<>
      <form onSubmit={(e) => {
                 e.preventDefault();

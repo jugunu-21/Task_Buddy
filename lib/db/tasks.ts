@@ -1,12 +1,18 @@
 "use server"
-import prisma  from '../prisma';
+import prisma from '../prisma';
 import type { Task } from '@prisma/client';
 
 export async function getAllTasks(userId: string): Promise<Task[]> {
-  return await prisma.task.findMany({
-    where: { userId },
-    orderBy: { dueDate: 'desc' }
-  });
+  try {
+    const tasks = await prisma.task.findMany({
+      where: { userId },
+      orderBy: { dueDate: 'desc' }
+    });
+    return tasks;
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    throw new Error('Failed to fetch tasks');
+  }
 }
 
 export async function createTask(data: Omit<Task, 'id'>): Promise<Task> {

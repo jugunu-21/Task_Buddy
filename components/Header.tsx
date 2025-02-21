@@ -3,23 +3,31 @@
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { auth } from '../lib/firebase';
-import { useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUserId } from '@/lib/redux/features/taskSlice';
 
 export default function Header({ viewMode, setViewMode }: { viewMode: 'list' | 'board', setViewMode: (viewMode: 'list' | 'board') => void }) {
   const router = useRouter();
   const [userPhoto, setUserPhoto] = useState<string>('/person.svg');
   const [userName, setUserName] = useState<string>('User');
-
+const dispatch=useDispatch()
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUserPhoto(user.photoURL || '/person.svg');
         setUserName(user.displayName || 'User');
+        dispatch(setUserId(user.uid))
+        console.log("user.uidFt",user.uid)
+      } else {
+        setUserPhoto('/person.svg');
+        setUserName('User');
+        dispatch(setUserId('')); // Clear user ID when logged out
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [dispatch]); // Add dispatch to dependency array
 
   const handleLogout = async () => {
     try {
