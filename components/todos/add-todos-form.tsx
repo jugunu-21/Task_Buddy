@@ -1,7 +1,7 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
 import { addTaskAsync } from "@/lib/redux/features/taskSlice";
 import { Button } from "@/components/ui/button";
+import { AppDispatch } from "@/lib/redux/store";
 import {
     Card,
     CardContent,
@@ -25,7 +25,7 @@ import toast from "react-hot-toast";
 import { MdOutlineSelfImprovement } from "react-icons/md";
 import { MdLocalPostOffice } from "react-icons/md";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
-export function CardWithForm({ sheetOpen, setSheetOpen,dispatch }: { dispatch:any,sheetOpen?: boolean, setSheetOpen?: ((n: boolean) => void) }) {
+export function CardWithForm({ sheetOpen, setSheetOpen, dispatch }: { dispatch: AppDispatch, sheetOpen?: boolean, setSheetOpen?: ((n: boolean) => void) }) {
 
     const [dueDate, setDueDate] = React.useState<Date>();
     const [title, setTitle] = React.useState<string>("");

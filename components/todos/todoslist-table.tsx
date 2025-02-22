@@ -44,6 +44,7 @@ import { DatePicker } from "./data-picker";
 import { ITaskCategory, ITaskStatus } from '@/type/todo';
 import toast from 'react-hot-toast';
 import { BsArrowReturnLeft } from "react-icons/bs";
+import { AppDispatch } from "@/lib/redux/store";
 
 
 interface TodosListTableProps {
@@ -61,8 +62,7 @@ interface TodosListTableProps {
     handleUpdateTask: (task: ITask) => void;
     toggleSection: (section: 'todo' | 'inProgress' | 'completed') => void;
     loading: boolean;
-
-  dispatch:any
+    dispatch: AppDispatch;
 }
 
 export function TodosListTable({

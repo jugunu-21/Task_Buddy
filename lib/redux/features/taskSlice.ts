@@ -36,7 +36,7 @@ export const fetchTasksAsync = createAsyncThunk(
 );
 export const fetchTasksFromDBAsync = createAsyncThunk(
   'tasks/fetchTasksFromDB',
-  async (userId: string, { dispatch }) => {
+  async (userId: string) => {
     try {
       const tasks = await getAllTasks(userId);
       const formattedTasks = tasks.map(task => ({

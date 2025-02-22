@@ -3,14 +3,13 @@ import { useEffect, useState } from "react";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { CardWithForm } from "./add-todos-form";
 import { Updatecard } from "./update-todos";
-import { ITask, deleteBulkTasksAsync, updateTaskAsync,setTasksFromDB, fetchTasksAsync } from "@/lib/redux/features/taskSlice";
+import { ITask, deleteBulkTasksAsync, updateTaskAsync, fetchTasksAsync } from "@/lib/redux/features/taskSlice";
 import FiltersAndSearch from "../FiltersAndSearch";
 import { Card } from "../ui/card";
 import { TodosListTable } from "./todoslist-table";
 import { TodoBoardTable } from "./todoboard-table";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/redux/store";
-import { getAllTasks } from "@/lib/db/tasks";
 
 interface TodoContainerProps {
     viewMode: 'list' | 'board';
@@ -29,7 +28,55 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
         inProgress: false,
         completed: false
     });
+    const [searchValue, setSearchValue] = React.useState<string>("");
+    const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
+    const [selectedDueDate, setSelectedDueDate] = React.useState<string>("all");
     const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        if (userId) {
+            console.log("userid", userId);
+            dispatch(fetchTasksAsync(userId));
+        }
+    }, [dispatch, userId]);
+
+    const filteredData = React.useMemo(() => {
+        if (!data) return [];
+        return data.filter(task => {
+            const matchesSearch = task.title.toLowerCase().includes(searchValue.toLowerCase());
+            const matchesCategory = selectedCategory === "all" || task.category === selectedCategory;
+            const matchesDueDate = selectedDueDate === "all" || (() => {
+                const taskDate = new Date(task.dueDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);               
+                const weekEnd = new Date(today);
+                weekEnd.setDate(weekEnd.getDate() + 7);
+                
+                const monthEnd = new Date(today);
+                monthEnd.setMonth(monthEnd.getMonth() + 1);
+                
+                switch(selectedDueDate) {
+                    case "today":
+                        return taskDate >= today && taskDate < tomorrow;
+                    case "tomorrow":
+                        return taskDate >= tomorrow && taskDate < new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000);
+                    case "week":
+                        return taskDate >= today && taskDate <= weekEnd;
+                    case "month":
+                        return taskDate >= today && taskDate <= monthEnd;
+                    default:
+                        return true;
+                }
+            })();
+            
+            return matchesSearch && matchesCategory && matchesDueDate;
+        });
+    }, [data, searchValue, selectedCategory, selectedDueDate]);
+
+    if (!data) return null;
+
     const handleTaskSelect = (taskId: string) => {
         setSelectedTasks(prev => {
             if (prev.includes(taskId)) {
@@ -66,51 +113,12 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
             [section]: !prev[section]
         }));
     };
-    const [searchValue, setSearchValue] = React.useState<string>("");
-    const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
-    const [selectedDueDate, setSelectedDueDate] = React.useState<string>("all");
-    const filteredData = React.useMemo(() => {
-        return data.filter(task => {
-            const matchesSearch = task.title.toLowerCase().includes(searchValue.toLowerCase());
-            const matchesCategory = selectedCategory === "all" || task.category === selectedCategory;
-            const matchesDueDate = selectedDueDate === "all" || (() => {
-                const taskDate = new Date(task.dueDate);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);               
-                const weekEnd = new Date(today);
-                weekEnd.setDate(weekEnd.getDate() + 7);
-                
-                const monthEnd = new Date(today);
-                monthEnd.setMonth(monthEnd.getMonth() + 1);
-                
-                switch(selectedDueDate) {
-                    case "today":
-                        return taskDate >= today && taskDate < tomorrow;
-                    case "tomorrow":
-                        return taskDate >= tomorrow && taskDate < new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000);
-                    case "week":
-                        return taskDate >= today && taskDate <= weekEnd;
-                    case "month":
-                        return taskDate >= today && taskDate <= monthEnd;
-                    default:
-                        return true;
-                }
-            })();
-            
-            return matchesSearch && matchesCategory && matchesDueDate;
-        });
-    }, [data, searchValue, selectedCategory, selectedDueDate]);
+
     const handleUpdateTask = (task: ITask) => {
         setSelectedTask(task);
         setUpdateOpen(true);
     };
-    if (!data) return null;
-   useEffect(() => {
-    console.log("userid",userId)
-    dispatch(fetchTasksAsync(userId));
-    }, [dispatch, userId]);
+
 
 
     return (

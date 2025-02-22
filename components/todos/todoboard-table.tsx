@@ -1,17 +1,17 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import {MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { ITask, deleteTaskAsync  } from "@/lib/redux/features/taskSlice";
+import { AppDispatch } from "@/lib/redux/store";
 
 interface TodoBoardTableProps {
     data: ITask[];
     selectedTasks: string[];
     handleBulkStatusUpdate: (status: string) => void;
     handleUpdateTask: (task: ITask) => void;
-    dispatch:any
+    dispatch: AppDispatch;
 }
 
 export function TodoBoardTable({ 
