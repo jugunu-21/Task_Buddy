@@ -4,6 +4,7 @@ import { auth } from '@/lib/firebase';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,10 +17,12 @@ export default function SignIn() {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
       
-      // Store the token in a secure cookie with expiration
-      const expirationDate = new Date();
-      expirationDate.setHours(expirationDate.getHours() + 24); // 24 hour expiration
-      document.cookie = `firebase-token=${idToken}; path=/; expires=${expirationDate.toUTCString()}; secure; samesite=lax; domain=${window.location.hostname}`;
+      // Store the token in a secure cookie with expiration using js-cookie
+      Cookies.set('firebase-token', idToken, {
+        expires: 2, // 2 days
+        path: '/',
+        secure: true
+      });
       
       // Use replace instead of push to prevent history stack buildup
       router.replace('/');

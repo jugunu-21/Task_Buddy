@@ -6,6 +6,7 @@ import { auth } from '../lib/firebase';
 import {  useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserId } from '@/lib/redux/features/taskSlice';
+import Cookies from 'js-cookie';
 
 export default function Header({ viewMode, setViewMode }: { viewMode: 'list' | 'board', setViewMode: (viewMode: 'list' | 'board') => void }) {
   const router = useRouter();
@@ -32,8 +33,10 @@ const dispatch=useDispatch()
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-      router.push('/signin');
+      // Remove the firebase-token cookie using js-cookie
+      Cookies.remove('firebase-token', { path: '/' });
+      // Use replace instead of push to prevent back navigation after logout
+      router.replace('/signin');
     } catch (error) {
       console.error('Logout error:', error);
     }

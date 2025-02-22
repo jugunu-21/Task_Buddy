@@ -1,6 +1,7 @@
 import { getApps, initializeApp } from 'firebase/app';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import Cookies from 'js-cookie';
 
 export async function middleware(request: NextRequest) {
   // Skip middleware for API routes and static files
