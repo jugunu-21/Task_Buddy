@@ -73,6 +73,7 @@ export const addTaskAsync = createAsyncThunk(
       userId: state.tasks.userIdFir,
       dueDate: new Date(taskData.dueDate)
     };
+    console.log("taskWithUserId",taskWithUserId)
     const task = await createTask(taskWithUserId);
     return {
       ...task,
