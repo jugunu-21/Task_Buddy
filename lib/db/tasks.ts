@@ -4,6 +4,9 @@ import type { Task } from '@prisma/client';
 
 export async function getAllTasks(userId: string): Promise<Task[]> {
   try {
+    console.log("userId",userId)
+
+
     const tasks = await prisma.task.findMany({
       where: { userId },
       orderBy: { dueDate: 'desc' }

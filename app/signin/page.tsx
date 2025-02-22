@@ -5,36 +5,28 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
-      
-      // Store the token in a secure cookie with expiration using js-cookie
       Cookies.set('firebase-token', idToken, {
         expires: 2, // 2 days
         path: '/',
         secure: true
       });
-      
-      // Use replace instead of push to prevent history stack buildup
       router.replace('/');
     } catch (error) {
       console.error('Authentication error:', error);
-      // Clear any existing token on error
       document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="p-8 bg-gray-50 rounded-lg shadow-lg w-full max-w-md">
