@@ -171,7 +171,9 @@ const taskSlice = createSlice({
         state.loading = false;
         state.tasks = [];
         state.filteredTasks = [];
-        state.error = action.error.message || 'Failed to fetch tasks';
+        state.error = action.error.message?.includes('Database connection error') 
+          ? 'Unable to connect to the database. Please check your connection and try again.' 
+          : action.error.message || 'Failed to fetch tasks';
       })
       // Add Task
       .addCase(addTaskAsync.pending, (state) => {
