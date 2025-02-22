@@ -19,7 +19,7 @@ export default function SignIn() {
       // Store the token in a secure cookie with expiration
       const expirationDate = new Date();
       expirationDate.setHours(expirationDate.getHours() + 24); // 24 hour expiration
-      document.cookie = `firebase-token=${idToken}; path=/; expires=${expirationDate.toUTCString()}; secure; samesite=strict`;
+      document.cookie = `firebase-token=${idToken}; path=/; expires=${expirationDate.toUTCString()}; secure; samesite=lax; domain=${window.location.hostname}`;
       
       // Use replace instead of push to prevent history stack buildup
       router.replace('/');

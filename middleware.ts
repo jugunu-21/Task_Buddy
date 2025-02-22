@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const firebaseToken = request.cookies.get('firebase-token');
+  const firebaseToken = request.cookies.get('firebase-token')?.value;
   const isAuthPage = request.nextUrl.pathname.startsWith('/signin');
   const response = NextResponse.next();
 
