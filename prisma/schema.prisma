@@ -17,4 +17,15 @@ model Task {
   dueDate     DateTime
   status      String      @default("todo")  // Can be "todo", "in-progress", "completed"
   userId      String      // To associate tasks with users
+  activities  ActivityLog[] @relation("TaskActivities")
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  taskId    String
+  task      Task     @relation("TaskActivities", fields: [taskId], references: [id], onDelete: Cascade)
+  action    String   // e.g., "created", "updated", "deleted"
+  changes   Json?    // Store changes in JSON format
+  timestamp DateTime @default(now())
+  userId    String   // To track who made the change
 }

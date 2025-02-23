@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { DatePicker } from "./data-picker";
 import toast from "react-hot-toast";
 import { AppDispatch } from "@/lib/redux/store";
+import { MdLocalPostOffice, MdOutlineSelfImprovement } from "react-icons/md";
 
 export function Updatecard({ todos, setSheetOpen }: { todos: ITask, setSheetOpen: ((n: boolean) => void) }) {
     const dispatch = useDispatch<AppDispatch>();
@@ -60,69 +61,76 @@ export function Updatecard({ todos, setSheetOpen }: { todos: ITask, setSheetOpen
             e.preventDefault();
             handleSubmituUpdate();
         }}>
-        <Card className=" ">
-            
+        <Card className="w-[800px] text-slate-500">
             <CardHeader>
                 <CardTitle>Update Task</CardTitle>
             </CardHeader>
-            <CardContent className=" grid">
-               
-                    <div className="grid w-full items-center gap-4">
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="title">Title</Label>
-                            <Input
-                                id="title"
-                                placeholder="Title"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="description">Description</Label>
-                            <Input
-                                id="description"
-                                placeholder="Task description"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="due_date">Due Date</Label>
-                            <DatePicker dueDate={dueDate} setDueDate={setDueDate} />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="status">Status</Label>
-                            <Select value={status} onValueChange={setStatus}>
-                                <SelectTrigger id="status">
-                                    <SelectValue placeholder="Select status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="TO-DO">To Do</SelectItem>
-                                    <SelectItem value="IN-PROGRESS">In Progress</SelectItem>
-                                    <SelectItem value="COMPLETED">Completed</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="category">Category</Label>
+            <CardContent>
+                <div className="grid w-full items-center gap-4">
+                    <div className="flex flex-col space-y-1.5">
+                        <Input
+                            id="title"
+                            placeholder="Task title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                        <Input
+                            id="description"
+                            placeholder="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="min-h-[80px] placeholder:top-0 placeholder:absolute placeholder:text-sm placeholder:text-gray-500 pt-4"
+                        />
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="flex flex-col space-y-1.5 text-xs">
+                            <Label htmlFor="category" className="text-xs">Task Category*</Label>
                             <Select value={category} onValueChange={setCategory}>
                                 <SelectTrigger id="category">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="work">Work</SelectItem>
-                                    <SelectItem value="personal">Personal</SelectItem>
+                                <SelectContent position="popper">
+                                    <SelectItem value="work">
+                                        <div className="flex items-center gap-2">
+                                            <MdLocalPostOffice className="text-blue-500" />
+                                            <span>Work</span>
+                                        </div>
+                                    </SelectItem>
+                                    <SelectItem value="personal">
+                                        <div className="flex items-center gap-2">
+                                            <MdOutlineSelfImprovement className="text-purple-500" />
+                                            <span>Personal</span>
+                                        </div>
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="due_date" className="text-xs">Due on*</Label>
+                            <DatePicker dueDate={dueDate} setDueDate={setDueDate} />
+                        </div>
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="status" className="text-xs">Task Status*</Label>
+                            <Select value={status} onValueChange={setStatus}>
+                                <SelectTrigger id="status">
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent position="popper">
+                                    <SelectItem value="TO-DO">To-Do</SelectItem>
+                                    <SelectItem value="IN-PROGRESS">In-Progress</SelectItem>
+                                    <SelectItem value="COMPLETED">Completed</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
-               
+                </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-1">
+            <CardFooter className="flex justify-between">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <Button onClick={handleSubmituUpdate}>Update task</Button>
             </CardFooter>
-           
         </Card> </form>
     );
 }

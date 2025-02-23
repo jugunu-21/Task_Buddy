@@ -32,24 +32,79 @@ export async function getAllTasks(userId: string): Promise<Task[]> {
 }
 
 export async function createTask(data: Omit<Task, 'id'>): Promise<Task> {
-  return await prisma.task.create({
+  const task = await prisma.task.create({
     data
   });
+
+  // Log the creation activity
+  await prisma.activityLog.create({
+    data: {
+      taskId: task.id,
+      userId: data.userId,
+      action: 'created',
+      changes: { newTask: data }
+    }
+  });
+
+  return task;
 }
 
 export async function updateTaskdb(id: string, data: Partial<Task>): Promise<Task> {
-  return await prisma.task.update({
+  // Get the current state of the task
+  const oldTask = await prisma.task.findUnique({ where: { id } });
+
+  const task = await prisma.task.update({
     where: { id },
     data
   });
+
+  // Log the update activity
+  await prisma.activityLog.create({
+    data: {
+      taskId: id,
+      userId: data.userId || task.userId,
+      action: 'updated',
+      changes: { before: oldTask, after: data }
+    }
+  });
+
+  return task;
 }
 export async function updateStatusdb(id: string, status:string): Promise<Task> {
-  return await prisma.task.update({
+  const oldTask = await prisma.task.findUnique({ where: { id } });
+  
+  const task = await prisma.task.update({
     where: { id },
     data: { status }
   });
+
+  // Log the status change activity
+  await prisma.activityLog.create({
+    data: {
+      taskId: id,
+      userId: task.userId,
+      action: 'status_changed',
+      changes: { oldStatus: oldTask?.status, newStatus: status }
+    }
+  });
+
+  return task;
 }
 export async function deleteTask(id: string): Promise<Task> {
+  const task = await prisma.task.findUnique({ where: { id } });
+  
+  // Create deletion activity log before deleting the task
+  if (task) {
+    await prisma.activityLog.create({
+      data: {
+        taskId: id,
+        userId: task.userId,
+        action: 'deleted',
+        changes: { deletedTask: task }
+      }
+    });
+  }
+
   return await prisma.task.delete({
     where: { id }
   });
