@@ -302,8 +302,8 @@ onClick={() => dispatch(deleteTaskAsync (payment.id))}
                                                    ({table.getRowModel().rows.filter(row => row.original.status === "TO-DO").length})
                                                 
                                             </div>
-                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('todo'); }}>
-                                                <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.todo ? '' : '-rotate-180'}`} />
+                                            <Button variant="link"  size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('todo'); }}>
+                                                <ChevronDown className={`h-4 w-4  ${expandedSections.todo ? '' : '-rotate-180'}`} />
                                             </Button>
                                         </div>
                                     </TableCell>
@@ -414,7 +414,7 @@ onClick={() => dispatch(deleteTaskAsync (payment.id))}
                                                     {table.getRowModel().rows.filter(row => row.original.status === "IN-PROGRESS").length}
                                                )
                                             </div>
-                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('inProgress'); }}>
+                                            <Button  variant="link"  size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('inProgress'); }}>
                                                 <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.inProgress ? '' : '-rotate-180'}`} />
                                             </Button>
                                         </div>
@@ -451,7 +451,7 @@ onClick={() => dispatch(deleteTaskAsync (payment.id))}
                                                     {table.getRowModel().rows.filter(row => row.original.status === "COMPLETED").length}
                                              )
                                             </div>
-                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('completed'); }}>
+                                            <Button variant="link"  size="icon" onClick={(e) => { e.stopPropagation(); toggleSection('completed'); }}>
                                                 <ChevronDown className={`h-4 w-4 transform transition-transform ${expandedSections.completed ? '' : '-rotate-180'}`} />
                                             </Button>
                                         </div>
