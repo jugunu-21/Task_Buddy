@@ -29,11 +29,12 @@ export default function SignIn() {
     }
   };
   return (
-    <div className="min-h-screen flex bg-white">
-      <div className="w-1/2 flex items-center justify-center">
-        <div className="p-8 bg-gray-50 rounded-lg shadow-lg w-full max-w-md">
-          <div className="flex flex-col items-center space-y-6">
-            <div className="text-[#7B1984] text-4xl font-bold mb-6 flex items-center gap-2">
+    <div className="max-h-screen h-screen flex bg-[#FFF9F9] overflow-hidden ">
+      <div className="max-w-[403.9px] flex items-center justify-center m-12 ">
+        <div className="p-8 rounded-lg  w-full max-w-md">
+          <div className="flex flex-col items-left space-y-6">
+          <div className='flex flex-col gap-2'>
+            <div className="text-[#7B1984] font-ur text-2xl font-semibold flex items-center gap-2">
               <Image
                 src="/window.svg"
                 alt="TaskBuddy Logo"
@@ -43,12 +44,13 @@ export default function SignIn() {
                 priority
               />
               TaskBuddy
-            </div>
-            <p className="text-gray-600 text-center text-sm mb-8">Streamline your workflow and track progress effortlessly with our all-in-one task management app.</p>
+            </div>  
+            <p className="text-gray-600  text-xs ">Streamline your workflow and track progress effortlessly with our all-in-one task management app.</p> 
+          </div> 
             <button
               onClick={handleGoogleSignIn}
               disabled={isLoading}
-              className=" bg-black flex items-center justify-center gap-3 w-full  text-white px-6 py-6 rounded-3xl  border border-gray-200"
+              className=" bg-black flex items-center justify-center gap-3 w-full  text-white px-2 py-4 rounded-3xl  border border-gray-200"
               aria-label="Sign in with Google"
             >
               <Image
@@ -63,16 +65,22 @@ export default function SignIn() {
           </div>
         </div>
       </div>
-      <div className="w-1/2   flex items-center justify-center   ">
-        <Image
-          src="/Screenshot 2025-02-23 at 3.34.09 PM.png"
+      <div className=" hidden md:block max-w-[834.3681640625] relative top-8 left-10  aspect-square">
+        <div className='h-full aspect-square border-2  border-[#7B1984] rounded-full opacity-25'>
+        <div className=" absolute top-0 mt-12 ml-12 w-2/3  aspect-square rounded-full border-2 border-[#7B1984] ">
+        <div className='absolute top-0 mt-20   ml-12  h-2/3  aspect-square rounded-full border-2 border-[#7B1984]'>
+          </div></div>
+        {/* <div className="absolute w-[800px] h-[800px] rounded-full border-2 border-[#7B1984] opacity-40 transform -translate-x-20 -translate-y-4"></div>  */}
+        </div>
+            <Image
+          src="/Screenshot 2025-02-24 at 12.41.46 AM.png"
           alt="Task Management Illustration"
           width={1000}
           height={1000}
-          className="object-cover object-left rounded-lg  h-full py-20 pl-10"
+          className=" absolute top-0 object-cover object-left rounded-xl shadow-md  h-full pt-10 pb-20  ml-32"
           
         />
       </div>
-    </div>
+    </div> 
   );
 }
