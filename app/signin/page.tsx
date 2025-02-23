@@ -48,7 +48,7 @@ export default function SignIn() {
             <button
               onClick={handleGoogleSignIn}
               disabled={isLoading}
-              className=" bg-black flex items-center justify-center gap-3 w-full  text-white px-6 py-6 rounded-3xl hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200"
+              className=" bg-black flex items-center justify-center gap-3 w-full  text-white px-6 py-6 rounded-3xl  border border-gray-200"
               aria-label="Sign in with Google"
             >
               <Image

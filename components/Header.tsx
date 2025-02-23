@@ -54,19 +54,19 @@ const dispatch=useDispatch()
               height={16}
               priority={true}
             />
-            <span className="text-purple-500 text-xl font-bold">TaskBuddy</span>
+            <span className=" text-xl text-gray-900 ">TaskBuddy</span>
           </div>
           <div className="hidden sm:flex items-center space-x-3 mt-2">
             <button 
               onClick={() => setViewMode('list')}
-              className={`px-3 py-2 text-sm font-medium text-gray-700 ${viewMode === 'list' ? 'border-b-2 border-purple-500' : ''} hover:border-b-2 hover:border-purple-500 focus:outline-none focus:bg-gray-100 focus:border-b-2 focus:border-purple-500 flex items-center gap-2`}
+              className={`px-3 py-2 text-sm font-medium  text-gray-700 ${viewMode === 'list' ? 'border-b-2 border-black' : ''} hover:border-b-2  focus:outline-none focus:bg-gray-100 focus:border-b-2  flex items-center gap-2`}
             >
               <Image src="/file.svg" alt="List Icon" width={16} height={16} priority={true} />
               List
             </button>
             <button 
               onClick={() => setViewMode('board')}
-              className={`px-3 py-2 text-sm font-medium text-gray-700 ${viewMode === 'board' ? 'border-b-2 border-purple-500' : ''} hover:border-b-2 hover:border-purple-500 focus:outline-none focus:bg-gray-100  focus:border-b-2 focus:border-purple-500 flex items-center gap-2`}
+              className={`px-3 py-2 text-sm font-medium text-gray-700 ${viewMode === 'board' ? 'border-b-2 border-black' : ''} hover:border-b-2  focus:outline-none focus:bg-gray-100  focus:border-b-2  flex items-center gap-2`}
             >
               <Image src="/globe.svg" alt="Board Icon" width={16} height={16} priority={true} />
               Board

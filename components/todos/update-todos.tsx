@@ -120,7 +120,7 @@ export function Updatecard({ todos, setSheetOpen }: { todos: ITask, setSheetOpen
             </CardContent>
             <CardFooter className="flex justify-end gap-1">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button onClick={handleSubmituUpdate}>Update task</Button>
+                <Button onClick={handleSubmituUpdate} className="bg-[#7B1984] hover:bg-[#79367f]">Update task</Button>
             </CardFooter>
            
         </Card> </form>

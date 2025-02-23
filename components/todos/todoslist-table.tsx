@@ -315,7 +315,7 @@ onClick={() => dispatch(deleteTaskAsync (payment.id))}
                                                 <Button 
                                                     variant="ghost" 
                                                     onClick={() => setShowaddTaskAsyncForm(true)}
-                                                    className="text-xs"
+                                                    className="text-xs  "
                                                     suppressHydrationWarning
                                                 >
                                                     Add Task
@@ -334,7 +334,7 @@ onClick={() => dispatch(deleteTaskAsync (payment.id))}
                                                             onChange={(e) => setNewTaskTitle(e.target.value)}
                                                         />
                                                             <div className='flex-row mt-2'>
-                                                            <Button variant="default" size="sm" onClick={handleaddTaskAsync} className='bg-purple-600 text-white rounded-3xl  hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors duration-200'>ADD <BsArrowReturnLeft /></Button>
+                                                            <Button variant="default" size="sm" onClick={handleaddTaskAsync} className='bg-[#7B1984] text-white rounded-3xl  hover:bg-[#762b7d] focus:outline-none focus:ring-2  focus:ring-opacity-50 transition-colors duration-200'>ADD <BsArrowReturnLeft /></Button>
 
                                                             
                                                             <Button variant="ghost" size="sm" onClick={() => {

@@ -166,7 +166,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen, dispatch }: { dispatch: 
             </CardContent>
             <CardFooter className="flex justify-between">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button onClick={handleSubmit}>Create task</Button>
+                <Button onClick={handleSubmit} className="bg-[#7B1984] hover:bg-[#77397d]">Create task</Button>
             </CardFooter>
         </Card>
         </form>
