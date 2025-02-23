@@ -6,10 +6,10 @@ import { Updatecard } from "./update-todos";
 import { ITask, deleteBulkTasksAsync, updateTaskAsync, fetchTasksAsync } from "@/lib/redux/features/taskSlice";
 import FiltersAndSearch from "../FiltersAndSearch";
 import { Card } from "../ui/card";
-import { TodosListTable } from "./todoslist-table";
-import { TodoBoardTable } from "./todoboard-table";
+import { TodosListTable } from "./todos-list-table";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/redux/store";
+import { CustomKanban } from "./todos-board-table";
 
 interface TodoContainerProps {
     viewMode: 'list' | 'board';
@@ -151,12 +151,12 @@ export function TodoContainer({ viewMode }: TodoContainerProps) {
                         setAddOpen={setAddOpen}
                     />
                 ) : (
-                    <TodoBoardTable 
-                    dispatch={dispatch}
+                    <CustomKanban 
+                
                     handleUpdateTask={handleUpdateTask}
-                        data={filteredData}
-                        selectedTasks={selectedTasks}
-                        handleBulkStatusUpdate={handleBulkStatusUpdate}
+                     
+                      
+                       
                         setAddOpen={setAddOpen}
                     />
                 )}
