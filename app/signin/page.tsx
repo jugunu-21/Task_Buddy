@@ -72,14 +72,18 @@ export default function SignIn() {
           </div></div>
         {/* <div className="absolute w-[800px] h-[800px] rounded-full border-2 border-[#7B1984] opacity-40 transform -translate-x-20 -translate-y-4"></div>  */}
         </div>
+        <div>
+
+        </div >
+        <div  className=" h-full absolute top-0  rounded-xl  pt-10 pb-20  ml-32">
             <Image
           src="/Screenshot 2025-02-24 at 12.41.46 AM.png"
           alt="Task Management Illustration"
           width={1000}
           height={1000}
-          className=" absolute top-0 object-cover object-left rounded-xl shadow-md  h-full pt-10 pb-20  ml-32"
-          
-        />
+          className='h-full object-cover object-left  shadow-md  rounded-xl '
+         
+        /></div>
       </div>
     </div> 
   );

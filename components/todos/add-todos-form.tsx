@@ -21,20 +21,17 @@ import {
 import { DatePicker } from "./data-picker";
 import {IAddTask, ITaskCategory, ITaskStatus, } from "@/type/todo";
 import toast from "react-hot-toast";
-
 import { MdOutlineSelfImprovement } from "react-icons/md";
 import { MdLocalPostOffice } from "react-icons/md";
 import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 export function CardWithForm({ sheetOpen, setSheetOpen, dispatch }: { dispatch: AppDispatch, sheetOpen?: boolean, setSheetOpen?: ((n: boolean) => void) }) {
-
     const [dueDate, setDueDate] = React.useState<Date>();
     const [title, setTitle] = React.useState<string>("");
     const [description, setDescription] = React.useState<string>("");
     const [category, setCategory] = React.useState<ITaskCategory>();
     const [status, setStatus] = React.useState<ITaskStatus>("TO-DO");
     const handleSubmit = () => {
-
-
+        // Enhanced title validation
         if (!title) {
             toast.error("Title is required");
             return;
@@ -44,38 +41,45 @@ export function CardWithForm({ sheetOpen, setSheetOpen, dispatch }: { dispatch: 
             toast.error("Due date is required");
             return;
         }
-
         if (!description) {
             toast.error("Description is required");
             return;
         }
-
         if (!category) {
             toast.error("Category is required");
             return;
         }
         if (!status) {
-            toast.error("Category is required");
+            toast.error("Status is required");
             return;
         }
-        const formData: IAddTask = {
-            dueDate:dueDate.toISOString(),
-            title,
-            description,
-            category,
-            status
-           
-            // TODO: Replace with actual user ID from auth context
-        };
-        if (setSheetOpen !== undefined) {
-            setSheetOpen(!sheetOpen);
+        try {
+            const formData: IAddTask = {
+                dueDate: dueDate.toISOString(),
+                title,
+                description,
+                category,
+                status
+            };
+            // Dispatch the action first
+            dispatch(addTaskAsync(formData));
+
+            // Only after successful dispatch, update UI state
+            if (setSheetOpen !== undefined) {
+                setSheetOpen(!sheetOpen);
+            }
+
+            // Reset form state
+            setTitle('');
+            setDescription('');
+            setDueDate(new Date());
+            setCategory(undefined);
+            
+            console.log("FormData:", formData);
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            toast.error("Error creating task. Please try again.");
         }
-        console.log("FormData:", formData);
-        dispatch(addTaskAsync(formData));
-        setTitle('');
-        setDescription('');
-        setDueDate(new Date());
-        setCategory(undefined);
     };
     return (<>
      <form onSubmit={(e) => {
@@ -166,7 +170,7 @@ export function CardWithForm({ sheetOpen, setSheetOpen, dispatch }: { dispatch: 
             </CardContent>
             <CardFooter className="flex justify-between">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button onClick={handleSubmit} className="bg-[#7B1984] hover:bg-[#77397d]">Create task</Button>
+                <Button type="submit" className="bg-[#7B1984] hover:bg-[#77397d]">Create task</Button>
             </CardFooter>
         </Card>
         </form>
