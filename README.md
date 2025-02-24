@@ -6,7 +6,7 @@ Task Buddy is a modern task management application built with Next.js, featuring
 
 🔗 **GitHub Repository**: [https://github.com/jugunu-21/Task_Buddy](https://github.com/jugunu-21/Task_Buddy)
 
-🚀 **Live Demo**: [https://task-buddy-henna.vercel.app/signin](https://task-buddy-henna.vercel.app/signin)
+🚀 **Live Demo**: [https://task-buddy-henna.vercel.app](https://task-buddy-henna.vercel.app)
 
 ## Features
 
@@ -92,7 +92,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Deployment
 
 The application is deployed on Vercel. You can access the live version here:
-[Task Buddy App] https://task-buddy-henna.vercel.app/signin
+[Task Buddy App] https://task-buddy-henna.vercel.app
 
 
 To deploy your own instance:
