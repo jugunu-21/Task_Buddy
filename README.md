@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Buddy - Task Management Application
+
+Task Buddy is a modern task management application built with Next.js, featuring a clean and intuitive interface for managing your daily tasks efficiently.
+
+## Quick Links
+
+🔗 **GitHub Repository**: [https://github.com/jugunu-21/Task_Buddy](https://github.com/jugunu-21/Task_Buddy)
+
+🚀 **Live Demo**: [https://task-buddy-henna.vercel.app/signin](https://task-buddy-henna.vercel.app/signin)
+
+## Features
+
+- **Task Management**
+  - Create, update, and delete tasks
+  - Organize tasks by categories
+  - Set due dates for tasks
+  - Track task status (todo, in-progress, completed)
+
+- **User Interface**
+  - Clean and modern design
+  - Responsive layout for all devices
+  - Intuitive task organization
+  - Real-time updates
+
+- **Data Management**
+  - PostgreSQL database integration
+  - Prisma ORM for efficient data handling
+  - Redux state management
+  - Server-side data fetching
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js (v18 or higher)
+- PostgreSQL database
+- npm or yarn package manager
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/jugunu-21/Task_Buddy
+cd Task_Buddy
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Set up environment variables:
+Create a `.env` file in the root directory with the following variables:
+```
+DATABASE_URL="postgresql://your-database-url"
+```
+
+4. Run database migrations:
+```bash
+npx prisma migrate dev
+```
+
+5. Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technical Challenges and Solutions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. State Management
+- **Challenge**: Managing complex task states across components
+- **Solution**: Implemented Redux with async thunks for efficient state management and data synchronization
 
-## Learn More
+### 2. Data Persistence
+- **Challenge**: Reliable data storage and retrieval
+- **Solution**: Integrated Prisma ORM with PostgreSQL for robust data management
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Real-time Updates
+- **Challenge**: Keeping UI in sync with data changes
+- **Solution**: Utilized Redux state management and efficient re-rendering strategies
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Type Safety
+- **Challenge**: Maintaining type safety across the application
+- **Solution**: Implemented TypeScript with proper interfaces and type definitions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+The application is deployed on Vercel. You can access the live version here:
+[Task Buddy App] https://task-buddy-henna.vercel.app/signin
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To deploy your own instance:
+
+1. Create a Vercel account
+2. Link your repository
+3. Configure environment variables
+4. Deploy with a single click
+
+## Built With
+
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Programming language
+- [Prisma](https://www.prisma.io/) - Database ORM
+- [PostgreSQL](https://www.postgresql.org/) - Database
+- [Redux Toolkit](https://redux-toolkit.js.org/) - State management
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+
+## License
+
+This project is licensed under the MIT License.
